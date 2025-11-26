@@ -8,92 +8,115 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Custom CSS for Sticky Menu & Mobile Optimization (Dark Mode Compatible)
+# 2. Custom CSS for Modern UI & Sticky Menu
 st.markdown("""
     <style>
-        /* Main Header Styling - Uses Streamlit's text color variable */
+        /* GLOBAL VARIABLES */
+        :root {
+            --primary-color: #0066cc;
+            --bg-color-light: #ffffff;
+            --bg-color-dark: #0e1117;
+            --text-color-light: #1E1E1E;
+            --text-color-dark: #FAFAFA;
+        }
+
+        /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
-            color: var(--text-color);
             margin-top: 10px;
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* STICKY MENU BAR */
+        /* --- MODERN STICKY MENU BAR --- */
+        
+        /* 1. Make the container sticky */
         div[data-testid="stRadio"] {
             position: sticky;
-            top: 0;
-            z-index: 999;
-            background-color: var(--background-color); /* Adaptive background */
-            padding-top: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--secondary-background-color);
-            display: flex;
-            justify-content: center; 
+            top: 15px; /* Slight gap from top for modern floating look */
+            z-index: 1000;
+            background-color: transparent;
+            padding-bottom: 10px;
         }
 
-        /* Menu Buttons Container */
-        div.row-widget.stRadio > div {
-            flex-direction: row;
+        /* 2. Style the 'radiogroup' container to look like a segmented control pill */
+        div[role="radiogroup"] {
+            background-color: rgba(128, 128, 128, 0.1); /* Light grey track */
+            padding: 5px;
+            border-radius: 15px;
+            display: flex;
+            flex-wrap: nowrap !important; /* FORCE ONE LINE */
+            overflow-x: auto; /* Allow horizontal scroll if screen is TINY */
+            justify-content: space-between;
+            gap: 5px;
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* 3. Style individual options (Labels) to look like modern tabs */
+        div[role="radiogroup"] label {
+            background-color: transparent;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 0; /* Vertical padding */
+            margin: 0;
+            flex-grow: 1; /* Make them fill the space evenly */
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+            white-space: nowrap; /* Prevent text wrapping */
+            min-width: 60px; /* Minimum width for tap target */
+            display: flex;
             justify-content: center;
             align-items: center;
-            background-color: var(--secondary-background-color); /* Adaptive grey/dark grey */
-            padding: 5px;
-            border-radius: 50px;
-            width: auto;
-            display: inline-flex;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        /* Individual Button Styling */
-        div.row-widget.stRadio > div > label {
-            background-color: transparent;
-            padding: 8px 16px;
-            border-radius: 40px;
-            margin: 0;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-color); /* Adaptive text color */
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        /* Hover effect for buttons - semi-transparent to work on both modes */
-        div.row-widget.stRadio > div > label:hover {
-            background-color: rgba(128, 128, 128, 0.2); 
         }
 
-        /* Hide the default "Go to" label */
+        /* 4. Hover Effects */
+        div[role="radiogroup"] label:hover {
+            background-color: rgba(128, 128, 128, 0.2);
+        }
+
+        /* Hide default radio circle/input */
+        div[role="radiogroup"] label > div:first-child {
+            display: none !important;
+        }
+
+        /* Hide the default "Navigation" label */
         label[data-testid="stWidgetLabel"] {
             display: none;
         }
         
-        /* Stats Box (Sets/Reps) */
+        /* --- BIGGER STATS BOX --- */
         .stats-box {
             display: flex;
             justify-content: space-around;
             align-items: center;
             background-color: var(--secondary-background-color);
-            border: 1px solid rgba(128, 128, 128, 0.2); /* Subtle border */
+            border: 1px solid rgba(128, 128, 128, 0.2);
             border-radius: 12px;
-            padding: 12px;
+            padding: 15px; /* Increased padding */
             margin-bottom: 15px;
-            font-size: 15px;
+            font-size: 18px; /* LARGER FONT */
             font-weight: 500;
-            color: var(--text-color);
+        }
+        
+        /* Highlight the numbers */
+        .stats-box strong {
+            font-weight: 700;
+            color: #0066cc; /* Highlight color */
         }
 
-        /* Footer Styling */
+        /* --- FOOTER --- */
         .footer-container {
             text-align: center;
             margin-top: 50px;
             padding-top: 20px;
-            border-top: 1px solid var(--secondary-background-color);
-            color: var(--text-color);
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
             opacity: 0.8;
         }
         .footer-link {
@@ -101,11 +124,8 @@ st.markdown("""
             text-decoration: none;
             font-weight: bold;
         }
-        /* Link color update for dark mode readability */
         @media (prefers-color-scheme: dark) {
-            .footer-link {
-                color: #4da6ff;
-            }
+            .footer-link { color: #4da6ff; }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -130,7 +150,8 @@ def get_youtube_embed(video_url):
 # 3. Main Header
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
-# 4. Top Navigation Menu (Sticky)
+# 4. Top Navigation Menu (Sticky & Modern)
+# Note: We use radio, but the CSS above hides the circles and styles it like a tab bar.
 page = st.radio(
     "Navigation", 
     ["Home", "Monday", "Wednesday", "Friday"], 
@@ -146,35 +167,35 @@ program = {
             {
                 "name": "Burpee Broad Jumps",
                 "sets": "3",
-                "reps": "10 reps",
+                "reps": "10",
                 "video": "https://www.youtube.com/watch?v=dzZZAuVbkvI",
                 "why": "Builds explosive power for sprinting and jumping."
             },
             {
                 "name": "Alternating Reverse Lunges",
                 "sets": "3",
-                "reps": "12 reps (each leg)",
+                "reps": "12/leg",
                 "video": "https://www.youtube.com/watch?v=OX0fKkaY6_c",
                 "why": "Protects knees while building single-leg stability needed for throwing."
             },
             {
-                "name": "Dumbbell Straight Leg Jackknives",
+                "name": "DB Straight Leg Jackknives",
                 "sets": "3",
-                "reps": "12 reps (each leg)",
+                "reps": "12/leg",
                 "video": "https://www.youtube.com/watch?v=1Q_yf422K1U",
                 "why": "Strengthens hamstrings to prevent injury and improves running mechanics."
             },
             {
                 "name": "Tuck Jumps",
                 "sets": "5",
-                "reps": "10 yards (or 15s in place)",
+                "reps": "10 yds",
                 "video": "https://www.youtube.com/watch?v=5S8i5PMatX0",
                 "why": "Teaches explosive first-step acceleration."
             },
             {
                 "name": "Box Jumps",
                 "sets": "3",
-                "reps": "30 seconds",
+                "reps": "30 sec",
                 "video": "https://www.youtube.com/watch?v=_VxxejUIIXM",
                 "why": "Builds core stability while arms are moving—mimics throwing posture."
             }
@@ -186,35 +207,35 @@ program = {
             {
                 "name": "Push-Ups with T-Rotation",
                 "sets": "3",
-                "reps": "10 reps total",
+                "reps": "10 total",
                 "video": "https://www.youtube.com/watch?v=q6g4X23wJQM",
                 "why": "Builds pushing strength and thoracic mobility for throwing."
             },
             {
                 "name": "Prone Y-T-W (Superman)",
                 "sets": "3",
-                "reps": "10 reps per letter",
+                "reps": "10 ea",
                 "video": "https://www.youtube.com/watch?v=2n7bFivHlC0",
                 "why": "Bulletproofs the shoulder blades and rotator cuff."
             },
             {
                 "name": "Bear Crawls",
                 "sets": "3",
-                "reps": "30 seconds",
+                "reps": "30 sec",
                 "video": "https://www.youtube.com/watch?v=t_o7a_Yt0_o",
                 "why": "Full body coordination and shoulder stability."
             },
             {
                 "name": "Russian Twists",
                 "sets": "3",
-                "reps": "20 touches total",
+                "reps": "20 total",
                 "video": "https://www.youtube.com/watch?v=wkD8rjkodUI",
                 "why": "Rotational core power for bat speed."
             },
             {
                 "name": "Wall Sits",
                 "sets": "3",
-                "reps": "45 seconds",
+                "reps": "45 sec",
                 "video": "https://www.youtube.com/watch?v=-cdph8hv0O0",
                 "why": "Leg endurance and mental toughness."
             }
@@ -224,37 +245,37 @@ program = {
         "focus": "Agility, Lateral Movement & Conditioning",
         "exercises": [
             {
-                "name": "Skater Jumps (Lateral Bounds)",
+                "name": "Skater Jumps (Lateral)",
                 "sets": "3",
-                "reps": "16 reps (8 per side)",
+                "reps": "16 total",
                 "video": "https://www.youtube.com/watch?v=4R2K9o-n1cM",
                 "why": "Lateral power for fielding range and stealing bases."
             },
             {
                 "name": "Burpees (No Push-up)",
                 "sets": "3",
-                "reps": "10 reps",
+                "reps": "10",
                 "video": "https://www.youtube.com/watch?v=x0e7wP2i71w",
                 "why": "Conditioning and 'get up' speed."
             },
             {
                 "name": "Lateral Line Hops",
                 "sets": "3",
-                "reps": "20 seconds (Max Speed)",
+                "reps": "20 sec",
                 "video": "https://www.youtube.com/watch?v=Gk6WdXqYg9c",
                 "why": "Improves foot speed and ankle stiffness."
             },
             {
                 "name": "Dead Bugs",
                 "sets": "3",
-                "reps": "12 reps",
+                "reps": "12",
                 "video": "https://www.youtube.com/watch?v=g_BYB0R-4vs",
                 "why": "Separates limb movement from core stability."
             },
             {
                 "name": "Broad Jumps",
                 "sets": "3",
-                "reps": "6 jumps (Stick landing)",
+                "reps": "6 jumps",
                 "video": "https://www.youtube.com/watch?v=V-XjIAlF1J8",
                 "why": "Full body power. Focus on balance."
             }
@@ -306,7 +327,7 @@ else:
             # Exercise Name
             st.markdown(f"#### {i}. {ex['name']}")
             
-            # Sets/Reps Box
+            # Sets/Reps Box (Updated with larger font)
             st.markdown(f"""
             <div class="stats-box">
                 <div><strong>Sets:</strong> {ex['sets']}</div>
