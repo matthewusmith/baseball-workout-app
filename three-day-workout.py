@@ -1,73 +1,111 @@
 import streamlit as st
 
-# 1. Page Configuration (Browser Tab Title and Icon)
+# 1. Page Configuration
 st.set_page_config(
-    page_title="Next Level Baseball",
+    page_title="12-Week Strength & Agility",
     page_icon="⚾",
     layout="centered",
-    initial_sidebar_state="collapsed" # Hide sidebar by default since we are using top nav
+    initial_sidebar_state="collapsed"
 )
 
-# 2. Custom CSS for Mobile Optimization
+# 2. Custom CSS for Sticky Menu & Mobile Optimization
 st.markdown("""
     <style>
-        /* CSS to center the main header */
+        /* Main Header Styling */
         .main-header {
             text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #1E1E1E;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
-        
-        /* Menu Bar Optimization for Mobile */
+
+        /* STICKY MENU BAR */
+        /* This targets the container holding the radio buttons */
+        div[data-testid="stRadio"] {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background-color: white; /* Needed so content doesn't show through */
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: center; /* Centers the menu itself */
+        }
+
+        /* Menu Buttons (The actual clickable pills) */
         div.row-widget.stRadio > div {
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            background-color: #f0f2f6;
+            background-color: #f8f9fa;
             padding: 5px;
-            border-radius: 10px;
-            width: 100%;
-            flex-wrap: nowrap; /* Forces buttons to stay on one line */
-            overflow-x: auto; /* Adds scroll if screen is EXTREMELY small */
+            border-radius: 50px; /* Pill shape */
+            width: auto;
+            display: inline-flex; /* content-based width */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
+        /* Individual Button Styling */
         div.row-widget.stRadio > div > label {
-            background-color: white;
-            padding: 4px 10px; /* Smaller padding */
-            border-radius: 5px;
-            margin: 0 2px;
-            border: 1px solid #ddd;
-            font-size: 14px; /* Smaller font for menu items */
-            white-space: nowrap; /* Prevents text wrapping inside buttons */
+            background-color: transparent;
+            padding: 8px 16px;
+            border-radius: 40px;
+            margin: 0;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        /* Hover effect for buttons */
+        div.row-widget.stRadio > div > label:hover {
+            color: #000;
+            background-color: #eee;
         }
 
-        /* Hide the label "Go to" */
-        label.css-1qg05tj {
+        /* Hide the default "Go to" label */
+        label[data-testid="stWidgetLabel"] {
             display: none;
         }
         
-        /* Custom Box for Sets/Reps to ensure they stay side-by-side */
+        /* Stats Box (Sets/Reps) */
         .stats-box {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background-color: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            padding: 8px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
+            background-color: #f1f3f6;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Footer Styling */
+        .footer-container {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+        .footer-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# Helper function to create the Youtube Embed code with Autoplay/Loop
+# Helper function for YouTube
 def get_youtube_embed(video_url):
-    """
-    Parses a standard YouTube URL, extracts the ID, and returns
-    an HTML iframe with autoplay, mute, and loop enabled.
-    """
     if "v=" in video_url:
         video_id = video_url.split("v=")[1].split("&")[0]
     elif "youtu.be" in video_url:
@@ -78,24 +116,24 @@ def get_youtube_embed(video_url):
     embed_url = f"https://www.youtube.com/embed/{video_id}?autoplay=1&mute=1&loop=1&playlist={video_id}&controls=1"
 
     return f"""
-    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 10px; margin-bottom: 10px;">
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <iframe src="{embed_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
     """
 
-# 3. Top Navigation Menu
-# Centered Header
-st.markdown('<div class="main-header">⚾ Next Level Baseball</div>', unsafe_allow_html=True)
+# 3. Main Header
+st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
+# 4. Top Navigation Menu (Sticky)
+# Note: st.radio is wrapped in a container that our CSS targets to make sticky
 page = st.radio(
-    "Go to:", 
+    "Navigation", 
     ["Home", "Monday", "Wednesday", "Friday"], 
     horizontal=True,
     label_visibility="collapsed"
 )
-st.markdown("---")
 
-# 4. Define the Workout Data
+# 5. Define the Workout Data
 program = {
     "Monday": {
         "focus": "Leg Power & Linear Speed",
@@ -219,9 +257,8 @@ program = {
     }
 }
 
-# 5. Main App Logic
+# 6. Main App Logic
 if page == "Home":
-    st.markdown("<h3 style='text-align: center;'>12-Week Bodyweight Regimen</h3>", unsafe_allow_html=True)
     st.image("https://images.unsplash.com/photo-1594470117722-de4b9a02ebed?auto=format&fit=crop&q=80&w=1000", caption="Train Hard, Play Hard")
     
     st.markdown("""
@@ -237,22 +274,35 @@ if page == "Home":
     
     **Coach's Tip:** consistency is key. Don't skip the warm-up!
     """)
+    
+    # Footer Section with Logo and Link
+    st.markdown("""
+        <div class="footer-container">
+            <p>Powered by</p>
+            <!-- REPALCE THE SRC URL BELOW WITH YOUR ACTUAL LOGO IMAGE URL -->
+            <a href="https://revealbetter.com" target="_blank">
+                <img src="https://via.placeholder.com/150x50?text=Reveal+Better" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
+            </a>
+            <p style="font-size: 14px;">Unlock your athletic potential with personalized coaching and programs.</p>
+            <a class="footer-link" href="https://revealbetter.com" target="_blank">Visit revealbetter.com</a>
+        </div>
+    """, unsafe_allow_html=True)
 
 else:
     # Get the data for the selected day
     day_data = program[page]
     
-    # Smaller, centered Header for the page title
+    # Centered Page Title
     st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{page} Workout</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='text-align: center; font-style: italic; color: #555;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; font-style: italic; color: #555; margin-bottom: 25px;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
     
     # Loop through exercises and display them
     for i, ex in enumerate(day_data['exercises'], 1):
         with st.container():
-            # Smaller Header for Exercise Name
+            # Exercise Name
             st.markdown(f"#### {i}. {ex['name']}")
             
-            # Custom HTML Box for Sets and Reps (Side-by-side on Mobile)
+            # Sets/Reps Box
             st.markdown(f"""
             <div class="stats-box">
                 <div><strong>Sets:</strong> {ex['sets']}</div>
@@ -267,7 +317,7 @@ else:
             else:
                 st.video(ex['video'])
             
-            # Open Box for Coach's Notes (No clicks needed)
+            # Coach's Note
             st.info(f"**💡 Coach's Note:** {ex['why']}")
             
             st.divider()
