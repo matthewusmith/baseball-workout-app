@@ -8,45 +8,44 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Custom CSS for Sticky Menu & Mobile Optimization
+# 2. Custom CSS for Sticky Menu & Mobile Optimization (Dark Mode Compatible)
 st.markdown("""
     <style>
-        /* Main Header Styling */
+        /* Main Header Styling - Uses Streamlit's text color variable */
         .main-header {
             text-align: center;
             font-size: 28px;
             font-weight: 800;
-            color: #1E1E1E;
+            color: var(--text-color);
             margin-top: 10px;
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
         /* STICKY MENU BAR */
-        /* This targets the container holding the radio buttons */
         div[data-testid="stRadio"] {
             position: sticky;
             top: 0;
             z-index: 999;
-            background-color: white; /* Needed so content doesn't show through */
+            background-color: var(--background-color); /* Adaptive background */
             padding-top: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--secondary-background-color);
             display: flex;
-            justify-content: center; /* Centers the menu itself */
+            justify-content: center; 
         }
 
-        /* Menu Buttons (The actual clickable pills) */
+        /* Menu Buttons Container */
         div.row-widget.stRadio > div {
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
+            background-color: var(--secondary-background-color); /* Adaptive grey/dark grey */
             padding: 5px;
-            border-radius: 50px; /* Pill shape */
+            border-radius: 50px;
             width: auto;
-            display: inline-flex; /* content-based width */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: inline-flex;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         /* Individual Button Styling */
@@ -58,15 +57,14 @@ st.markdown("""
             border: none;
             font-size: 14px;
             font-weight: 600;
-            color: #555;
+            color: var(--text-color); /* Adaptive text color */
             transition: all 0.3s ease;
             cursor: pointer;
         }
         
-        /* Hover effect for buttons */
+        /* Hover effect for buttons - semi-transparent to work on both modes */
         div.row-widget.stRadio > div > label:hover {
-            color: #000;
-            background-color: #eee;
+            background-color: rgba(128, 128, 128, 0.2); 
         }
 
         /* Hide the default "Go to" label */
@@ -79,13 +77,14 @@ st.markdown("""
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background-color: #f1f3f6;
+            background-color: var(--secondary-background-color);
+            border: 1px solid rgba(128, 128, 128, 0.2); /* Subtle border */
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 15px;
             font-size: 15px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-color);
         }
 
         /* Footer Styling */
@@ -93,13 +92,20 @@ st.markdown("""
             text-align: center;
             margin-top: 50px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #666;
+            border-top: 1px solid var(--secondary-background-color);
+            color: var(--text-color);
+            opacity: 0.8;
         }
         .footer-link {
             color: #0066cc;
             text-decoration: none;
             font-weight: bold;
+        }
+        /* Link color update for dark mode readability */
+        @media (prefers-color-scheme: dark) {
+            .footer-link {
+                color: #4da6ff;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
@@ -125,7 +131,6 @@ def get_youtube_embed(video_url):
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
 # 4. Top Navigation Menu (Sticky)
-# Note: st.radio is wrapped in a container that our CSS targets to make sticky
 page = st.radio(
     "Navigation", 
     ["Home", "Monday", "Wednesday", "Friday"], 
@@ -259,7 +264,7 @@ program = {
 
 # 6. Main App Logic
 if page == "Home":
-    st.image("https://images.unsplash.com/photo-1594470117722-de4b9a02ebed?auto=format&fit=crop&q=80&w=1000", caption="Train Hard, Play Hard")
+    st.image("https://images.unsplash.com/photo-1508344928928-7165b54eb69d?auto=format&fit=crop&q=80&w=1000", caption="Train Hard, Play Hard")
     
     st.markdown("""
     Welcome to the team. This program is designed to build:
@@ -272,16 +277,15 @@ if page == "Home":
     2.  Watch the videos for proper form.
     3.  Complete every rep.
     
-    **Coach's Tip:** consistency is key. Don't skip the warm-up!
+    **Coach's Tip:** consistency is key. Don't skip a day, don't cheat yourself!  Results guaranteed after 12 weeks.
     """)
     
     # Footer Section with Logo and Link
     st.markdown("""
         <div class="footer-container">
             <p>Powered by</p>
-            <!-- REPALCE THE SRC URL BELOW WITH YOUR ACTUAL LOGO IMAGE URL -->
             <a href="https://revealbetter.com" target="_blank">
-                <img src="https://via.placeholder.com/150x50?text=Reveal+Better" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
+                <img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(5).png" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
             </a>
             <p style="font-size: 14px;">Unlock your athletic potential with personalized coaching and programs.</p>
             <a class="footer-link" href="https://revealbetter.com" target="_blank">Visit revealbetter.com</a>
