@@ -291,7 +291,7 @@ if page == "Home":
     st.image("https://images.unsplash.com/photo-1680120846170-cb4bc948c797?q=80&w=1000&auto=format&fit=crop", caption="Train Hard, Play Hard")
     
     st.markdown("""
-    Welcome to the team. This program is designed to build:
+    Welcome to Coach D's 12-week program. This program is designed to build:
     * **Speed:** Linear and lateral explosiveness.
     * **Strength:** Core and limb stability.
     * **Durability:** Protecting your throwing arm and knees.
