@@ -8,30 +8,56 @@ st.set_page_config(
     initial_sidebar_state="collapsed" # Hide sidebar by default since we are using top nav
 )
 
-# 2. Custom CSS for the Top Navigation Bar
-# This makes the radio buttons look like a navigation menu
+# 2. Custom CSS for Mobile Optimization
 st.markdown("""
     <style>
-        /* Center the radio buttons and add a background */
+        /* CSS to center the main header */
+        .main-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Menu Bar Optimization for Mobile */
         div.row-widget.stRadio > div {
             flex-direction: row;
             justify-content: center;
             align-items: center;
             background-color: #f0f2f6;
-            padding: 10px;
+            padding: 5px;
             border-radius: 10px;
+            width: 100%;
+            flex-wrap: nowrap; /* Forces buttons to stay on one line */
+            overflow-x: auto; /* Adds scroll if screen is EXTREMELY small */
         }
-        /* Style the individual buttons slightly */
+        
         div.row-widget.stRadio > div > label {
             background-color: white;
-            padding: 5px 15px;
+            padding: 4px 10px; /* Smaller padding */
             border-radius: 5px;
-            margin: 0 5px;
+            margin: 0 2px;
             border: 1px solid #ddd;
+            font-size: 14px; /* Smaller font for menu items */
+            white-space: nowrap; /* Prevents text wrapping inside buttons */
         }
-        /* Hide the label "Go to" since the bar is self-explanatory */
+
+        /* Hide the label "Go to" */
         label.css-1qg05tj {
             display: none;
+        }
+        
+        /* Custom Box for Sets/Reps to ensure they stay side-by-side */
+        .stats-box {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -42,20 +68,15 @@ def get_youtube_embed(video_url):
     Parses a standard YouTube URL, extracts the ID, and returns
     an HTML iframe with autoplay, mute, and loop enabled.
     """
-    # Simple logic to extract video ID from standard watch links
     if "v=" in video_url:
         video_id = video_url.split("v=")[1].split("&")[0]
     elif "youtu.be" in video_url:
         video_id = video_url.split("/")[-1]
     else:
-        # Fallback for unexpected formats
         return None
 
-    # Construct the embed URL
-    # playlist={video_id} is required for the loop parameter to work on single videos
     embed_url = f"https://www.youtube.com/embed/{video_id}?autoplay=1&mute=1&loop=1&playlist={video_id}&controls=1"
 
-    # Return Responsive HTML wrapper (16:9 aspect ratio)
     return f"""
     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 10px; margin-bottom: 10px;">
         <iframe src="{embed_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
@@ -63,18 +84,18 @@ def get_youtube_embed(video_url):
     """
 
 # 3. Top Navigation Menu
-# We use a horizontal radio button group to act as our menu
-st.markdown("### ⚾ Next Level Baseball") # Small header above menu
+# Centered Header
+st.markdown('<div class="main-header">⚾ Next Level Baseball</div>', unsafe_allow_html=True)
+
 page = st.radio(
     "Go to:", 
     ["Home", "Monday", "Wednesday", "Friday"], 
     horizontal=True,
-    label_visibility="collapsed" # Hides the text "Go to:"
+    label_visibility="collapsed"
 )
-st.markdown("---") # Visual separator
+st.markdown("---")
 
 # 4. Define the Workout Data
-# This dictionary holds all the exercises, sets, reps, and video links.
 program = {
     "Monday": {
         "focus": "Leg Power & Linear Speed",
@@ -200,7 +221,7 @@ program = {
 
 # 5. Main App Logic
 if page == "Home":
-    st.subheader("12-Week Bodyweight Regimen")
+    st.markdown("<h3 style='text-align: center;'>12-Week Bodyweight Regimen</h3>", unsafe_allow_html=True)
     st.image("https://images.unsplash.com/photo-1594470117722-de4b9a02ebed?auto=format&fit=crop&q=80&w=1000", caption="Train Hard, Play Hard")
     
     st.markdown("""
@@ -221,32 +242,33 @@ else:
     # Get the data for the selected day
     day_data = program[page]
     
-    st.title(f"{page} Workout")
-    st.subheader(f"Focus: {day_data['focus']}")
+    # Smaller, centered Header for the page title
+    st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{page} Workout</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; font-style: italic; color: #555;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
     
     # Loop through exercises and display them
     for i, ex in enumerate(day_data['exercises'], 1):
-        # Container for each exercise card
         with st.container():
-            st.markdown(f"### {i}. {ex['name']}")
+            # Smaller Header for Exercise Name
+            st.markdown(f"#### {i}. {ex['name']}")
             
-            # Columns for Sets and Reps
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric(label="Sets", value=ex['sets'])
-            with col2:
-                st.metric(label="Reps", value=ex['reps'])
+            # Custom HTML Box for Sets and Reps (Side-by-side on Mobile)
+            st.markdown(f"""
+            <div class="stats-box">
+                <div><strong>Sets:</strong> {ex['sets']}</div>
+                <div><strong>Reps:</strong> {ex['reps']}</div>
+            </div>
+            """, unsafe_allow_html=True)
             
-            # Custom Video Embed with Autoplay/Loop
+            # Video Embed
             video_html = get_youtube_embed(ex['video'])
             if video_html:
                 st.markdown(video_html, unsafe_allow_html=True)
             else:
-                st.video(ex['video']) # Fallback if URL parsing fails
+                st.video(ex['video'])
             
-            # Coach's Note Expander
-            with st.expander(f"💡 Why do we do this?"):
-                st.write(ex['why'])
+            # Open Box for Coach's Notes (No clicks needed)
+            st.info(f"**💡 Coach's Note:** {ex['why']}")
             
             st.divider()
 
