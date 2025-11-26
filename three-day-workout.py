@@ -264,7 +264,7 @@ program = {
 
 # 6. Main App Logic
 if page == "Home":
-    st.image("https://images.unsplash.com/photo-1508344928928-7165b54eb69d?auto=format&fit=crop&q=80&w=1000", caption="Train Hard, Play Hard")
+    st.image("https://images.unsplash.com/photo-1531315630201-02d90d8299de?q=80&w=1000&auto=format&fit=crop", caption="Train Hard, Play Hard")
     
     st.markdown("""
     Welcome to the team. This program is designed to build:
