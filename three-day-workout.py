@@ -49,7 +49,10 @@ st.markdown("""
             display: flex;
             flex-wrap: nowrap !important; /* FORCE ONE LINE */
             overflow-x: auto; /* Allow horizontal scroll if screen is TINY */
-            justify-content: space-between;
+            justify-content: center; /* Center items */
+            margin: 0 auto; /* Center the menu itself on the page */
+            width: fit-content; /* Shrink to fit content */
+            max-width: 100%; /* Prevent overflow */
             gap: 5px;
             backdrop-filter: blur(10px); /* Glassmorphism effect */
             border: 1px solid rgba(128, 128, 128, 0.2);
@@ -61,9 +64,9 @@ st.markdown("""
             background-color: transparent;
             border: none;
             border-radius: 10px;
-            padding: 8px 0; /* Vertical padding */
+            padding: 8px 15px; /* Added horizontal padding */
             margin: 0;
-            flex-grow: 1; /* Make them fill the space evenly */
+            flex-grow: 0; /* Don't stretch unnecessarily */
             text-align: center;
             font-weight: 600;
             font-size: 14px;
@@ -306,7 +309,7 @@ if page == "Home":
         <div class="footer-container">
             <p>Powered by</p>
             <a href="https://revealbetter.com" target="_blank">
-                <img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(5).png" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
+                <img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(6).png" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
             </a>
             <p style="font-size: 14px;">Unlock your athletic potential with personalized coaching and programs.</p>
             <a class="footer-link" href="https://revealbetter.com" target="_blank">Visit revealbetter.com</a>
