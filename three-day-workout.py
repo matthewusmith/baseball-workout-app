@@ -36,6 +36,32 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Helper function to create the Youtube Embed code with Autoplay/Loop
+def get_youtube_embed(video_url):
+    """
+    Parses a standard YouTube URL, extracts the ID, and returns
+    an HTML iframe with autoplay, mute, and loop enabled.
+    """
+    # Simple logic to extract video ID from standard watch links
+    if "v=" in video_url:
+        video_id = video_url.split("v=")[1].split("&")[0]
+    elif "youtu.be" in video_url:
+        video_id = video_url.split("/")[-1]
+    else:
+        # Fallback for unexpected formats
+        return None
+
+    # Construct the embed URL
+    # playlist={video_id} is required for the loop parameter to work on single videos
+    embed_url = f"https://www.youtube.com/embed/{video_id}?autoplay=1&mute=1&loop=1&playlist={video_id}&controls=1"
+
+    # Return Responsive HTML wrapper (16:9 aspect ratio)
+    return f"""
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 10px; margin-bottom: 10px;">
+        <iframe src="{embed_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    """
+
 # 3. Top Navigation Menu
 # We use a horizontal radio button group to act as our menu
 st.markdown("### ⚾ Next Level Baseball") # Small header above menu
@@ -211,8 +237,12 @@ else:
             with col2:
                 st.metric(label="Reps", value=ex['reps'])
             
-            # Video Embed
-            st.video(ex['video'])
+            # Custom Video Embed with Autoplay/Loop
+            video_html = get_youtube_embed(ex['video'])
+            if video_html:
+                st.markdown(video_html, unsafe_allow_html=True)
+            else:
+                st.video(ex['video']) # Fallback if URL parsing fails
             
             # Coach's Note Expander
             with st.expander(f"💡 Why do we do this?"):
