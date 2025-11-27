@@ -22,12 +22,18 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
+        /* REDUCE TOP PADDING */
+        .block-container {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 10px;
+            margin-top: 0px; /* Reduced margin */
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -37,18 +43,16 @@ st.markdown("""
         /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
-            top: 15px; 
+            top: 10px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
             
             /* FORCE CENTER ALIGNMENT */
             display: flex;
-            justify-content: center !important;
-            align-items: center !important;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            margin-left: auto !important;
-            margin-right: auto !important;
         }
 
         /* 2. Style the inner radiogroup (the 'pill' itself) */
@@ -62,11 +66,12 @@ st.markdown("""
             
             /* Center items inside the pill */
             justify-content: center;
+            align-items: center;
             
             /* Center the pill itself */
             margin: 0 auto;
             width: fit-content;
-            max-width: 100%;
+            max-width: 98%; /* Prevent overflow on very small screens */
             
             gap: 5px;
             backdrop-filter: blur(10px);
@@ -78,7 +83,7 @@ st.markdown("""
             background-color: transparent;
             border: none;
             border-radius: 10px;
-            padding: 8px 15px;
+            padding: 8px 12px; /* Slightly reduced horizontal padding for better fit */
             margin: 0;
             flex-grow: 0;
             text-align: center;
@@ -87,7 +92,7 @@ st.markdown("""
             color: var(--text-color);
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 50px;
+            min-width: 40px; /* reduced min-width */
             display: flex;
             justify-content: center;
             align-items: center;
