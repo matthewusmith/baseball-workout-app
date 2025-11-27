@@ -39,6 +39,10 @@ st.markdown("""
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
+            /* CENTER ALIGNMENT FIX */
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
 
         div[role="radiogroup"] {
