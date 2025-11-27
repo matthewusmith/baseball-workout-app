@@ -510,12 +510,12 @@ else:
     # --- DYNAMIC WARM UP TIMER HTML/JS ---
     # Defines a timer block with Start/Reset buttons and audio element for the buzzer.
     timer_html = """
-    <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center; font-family: sans-serif;">
-        <h4 style="margin: 0 0 10px 0; color: #333;">⏱️ Dynamic Warm-Up Timer</h4>
-        <div id="timer-display" style="font-size: 32px; font-weight: bold; color: #0066cc; margin-bottom: 10px;">05:00</div>
+    <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 10px; margin-bottom: 5px; text-align: center; font-family: sans-serif;">
+        <h4 style="margin: 0 0 5px 0; color: #333; font-size: 16px;">⏱️ Dynamic Warm-Up Timer</h4>
+        <div id="timer-display" style="font-size: 24px; font-weight: bold; color: #0066cc; margin-bottom: 5px;">05:00</div>
         
-        <button onclick="startTimer()" style="background-color: #0066cc; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 5px;">Start</button>
-        <button onclick="resetTimer()" style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Reset</button>
+        <button onclick="startTimer()" style="background-color: #0066cc; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-right: 5px;">Start</button>
+        <button onclick="resetTimer()" style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">Reset</button>
 
         <audio id="timer-beep">
             <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mp3">
@@ -598,8 +598,15 @@ else:
     # Render Audio Player first
     components.html(audio_player_html, height=160)
     
+    # Warm Up Instructions
+    st.markdown("""
+    **🔥 Dynamic Warm-Up (5 Minutes)**
+    * **Jumping Jacks** (30s) • **Arm Circles** (30s) • **High Knees** (30s) 
+    * **Butt Kicks** (30s) • **Torso Twists** (30s) • **Leg Swings** (30s)
+    """)
+
     # Render Timer second
-    components.html(timer_html, height=180)
+    components.html(timer_html, height=135)
     
     # Loop through exercises
     for i, ex in enumerate(day_data['exercises'], 1):
