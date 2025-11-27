@@ -190,7 +190,7 @@ st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>',
 # 4. Top Navigation Menu
 page = st.radio(
     "Navigation", 
-    ["Home", "Mon", "Wed", "Fri", "Stretching", "Contact"], 
+    ["Home", "Monday", "Wednesday", "Friday", "Stretching", "Contact"], 
     horizontal=True,
     label_visibility="collapsed"
 )
@@ -539,4 +539,3 @@ else:
     if st.button(f"Mark {page} Complete ✅"):
         st.balloons()
         st.success("Workout Recorded! Great job today.")
-
