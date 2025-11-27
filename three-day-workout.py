@@ -32,65 +32,19 @@ st.markdown("""
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* --- MODERN STICKY MENU BAR (TOP LEVEL) --- */
-        div[data-testid="stRadio"] {
+        /* --- STICKY SELECTBOX NAVIGATION --- */
+        /* This targets the container of the selectbox to make it stick to the top */
+        div[data-testid="stSelectbox"] {
             position: sticky;
-            top: 15px; 
-            z-index: 1000;
-            background-color: transparent;
-            padding-bottom: 5px;
-            display: flex;
-            justify-content: center !important;
-            align-items: center !important;
-            width: 100%;
-            margin-left: auto !important;
-            margin-right: auto !important;
+            top: 0;
+            z-index: 999;
+            background-color: var(--background-color); /* Match page background */
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.1);
         }
 
-        div[role="radiogroup"] {
-            background-color: rgba(128, 128, 128, 0.1);
-            padding: 5px;
-            border-radius: 15px;
-            display: flex;
-            flex-wrap: nowrap !important;
-            overflow-x: auto;
-            justify-content: center;
-            margin: 0 auto;
-            width: fit-content;
-            max-width: 100%;
-            gap: 5px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(128, 128, 128, 0.2);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        div[role="radiogroup"] label {
-            background-color: transparent;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 12px;
-            margin: 0;
-            flex-grow: 1; /* Allow buttons to expand evenly */
-            text-align: center;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-color);
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            min-width: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        div[role="radiogroup"] label:hover {
-            background-color: rgba(128, 128, 128, 0.2);
-        }
-
-        div[role="radiogroup"] label > div:first-child {
-            display: none !important;
-        }
-
+        /* Hide the label "Navigation" so it's just the box */
         label[data-testid="stWidgetLabel"] {
             display: none;
         }
@@ -187,24 +141,11 @@ BASE_AUDIO_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{
 # 3. Main Header
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
-# 4. Two-Tier Navigation System
-# Top Level: Categories
-top_nav = st.radio(
+# 4. Main Navigation (Single Dropdown)
+page = st.selectbox(
     "Navigation", 
-    ["Home", "Workouts", "Contact"], 
-    horizontal=True,
-    label_visibility="collapsed"
+    ["Home", "Monday", "Wednesday", "Friday", "Stretching", "Contact"]
 )
-
-# Logic to determine the actual page content
-if top_nav == "Workouts":
-    # Sub Level: Dropdown for specific workout days (Mobile Friendly)
-    page = st.selectbox(
-        "Choose your session:", 
-        ["Monday", "Wednesday", "Friday", "Stretching"]
-    )
-else:
-    page = top_nav
 
 # 5. Define the Workout Data
 program = {
