@@ -439,8 +439,8 @@ elif page == "Contact":
     st.video("https://www.youtube.com/watch?v=0bBOyC9E9F0")
     
     st.markdown("""
-    <div class="contact-header">About Reveal Better</div>
-    <p>At Reveal Better, we believe every athlete has another level they haven't unlocked yet. We combine data-driven training with old-school work ethic to help baseball players maximize their potential. From youth development to elite performance, we provide the roadmap; you provide the effort.</p>
+    <div class="contact-header">About Reveal</div>
+    <p>At Reveal, we believe every athlete has another level they haven't unlocked yet. We combine data-driven training with old-school work ethic to help athletes from 5 to 85 maximize their potential. From youth development and elite performance to entire body wellness, we provide the roadmap; you provide the effort.</p>
     
     <div class="contact-header">Our Services</div>
     <ul>
