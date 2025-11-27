@@ -491,8 +491,17 @@ else:
     # Get the data for the selected day
     day_data = program[page]
     
+    # Map short menu names to full titles
+    page_titles = {
+        "Mon": "Monday Workout",
+        "Wed": "Wednesday Workout",
+        "Fri": "Friday Workout",
+        "Stretch": "Post-workout Stretching"
+    }
+    title_text = page_titles.get(page, f"{page} Workout")
+    
     # Centered Page Title
-    st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{page} Workout</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{title_text}</h3>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align: center; font-style: italic; color: #555; margin-bottom: 25px;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
     
     # --- AUDIO COACH SECTION ---
