@@ -169,19 +169,21 @@ st.markdown("""
             border-left: 5px solid var(--primary-color);
         }
 
-        /* --- SCROLL SNAPPING --- */
-        /* Apply snap behavior to the main app container */
+        /* --- SCROLL SNAPPING (UPDATED FOR MOBILE) --- */
+        /* Apply strict snap behavior to the main app container */
         section[data-testid="stAppViewContainer"] {
-            scroll-snap-type: y proximity; /* 'proximity' feels smoother than 'mandatory' */
+            scroll-snap-type: y mandatory; /* changed from proximity to mandatory for stronger snap */
             scroll-behavior: smooth;
         }
         
         /* The invisible anchor we place above each exercise */
         .exercise-snap-target {
             scroll-snap-align: start;
-            scroll-margin-top: 100px; /* Offset to clear the sticky menu */
+            scroll-margin-top: 130px; /* Increased offset to ensure title clears the sticky menu */
+            scroll-snap-stop: always; /* Forces mobile browsers to stop here */
             display: block;
-            height: 1px; 
+            height: 1px;
+            visibility: hidden;
         }
     </style>
 """, unsafe_allow_html=True)
