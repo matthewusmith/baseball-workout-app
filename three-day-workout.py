@@ -32,19 +32,75 @@ st.markdown("""
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* --- STICKY SELECTBOX NAVIGATION --- */
-        /* This targets the container of the selectbox to make it stick to the top */
-        div[data-testid="stSelectbox"] {
+        /* --- MODERN STICKY MENU BAR --- */
+        
+        /* 1. Target the main Streamlit Radio container */
+        div[data-testid="stRadio"] {
             position: sticky;
-            top: 0;
-            z-index: 999;
-            background-color: var(--background-color); /* Match page background */
-            padding-top: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+            top: 15px; 
+            z-index: 1000;
+            background-color: transparent;
+            padding-bottom: 10px;
+            
+            /* FORCE CENTER ALIGNMENT */
+            display: flex;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100%;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
 
-        /* Hide the label "Navigation" so it's just the box */
+        /* 2. Style the inner radiogroup (the 'pill' itself) */
+        div[role="radiogroup"] {
+            background-color: rgba(128, 128, 128, 0.1);
+            padding: 5px;
+            border-radius: 15px;
+            display: flex;
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            
+            /* Center items inside the pill */
+            justify-content: center;
+            
+            /* Center the pill itself */
+            margin: 0 auto;
+            width: fit-content;
+            max-width: 100%;
+            
+            gap: 5px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        div[role="radiogroup"] label {
+            background-color: transparent;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 15px;
+            margin: 0;
+            flex-grow: 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        div[role="radiogroup"] label:hover {
+            background-color: rgba(128, 128, 128, 0.2);
+        }
+
+        div[role="radiogroup"] label > div:first-child {
+            display: none !important;
+        }
+
         label[data-testid="stWidgetLabel"] {
             display: none;
         }
@@ -141,15 +197,17 @@ BASE_AUDIO_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{
 # 3. Main Header
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
-# 4. Main Navigation (Single Dropdown)
-page = st.selectbox(
+# 4. Main Navigation (Restored Radio Button Menu with Short Names)
+page = st.radio(
     "Navigation", 
-    ["Home", "Monday", "Wednesday", "Friday", "Stretching", "Contact"]
+    ["Home", "Mon", "Wed", "Fri", "Stretch", "Contact"], 
+    horizontal=True,
+    label_visibility="collapsed"
 )
 
-# 5. Define the Workout Data
+# 5. Define the Workout Data (Keys updated to match Short Menu Names)
 program = {
-    "Monday": {
+    "Mon": {
         "focus": "Leg Power & Linear Speed",
         "audio_opening": "monday_opening.mp3",
         "exercises": [
@@ -190,7 +248,7 @@ program = {
             }
         ]
     },
-    "Wednesday": {
+    "Wed": {
         "focus": "Upper Body Strength & Rotational Control",
         "audio_opening": "wednesday_opening.mp3",
         "exercises": [
@@ -231,7 +289,7 @@ program = {
             }
         ]
     },
-    "Friday": {
+    "Fri": {
         "focus": "Agility, Lateral Movement & Conditioning",
         "audio_opening": "friday_opening.mp3",
         "exercises": [
@@ -272,7 +330,7 @@ program = {
             }
         ]
     },
-    "Stretching": {
+    "Stretch": {
         "focus": "Arm Care & Hip Mobility",
         "audio_opening": "stretching_opening.mp3",
         "exercises": [
