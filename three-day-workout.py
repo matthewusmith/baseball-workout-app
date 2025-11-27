@@ -33,12 +33,16 @@ st.markdown("""
         }
 
         /* --- MODERN STICKY MENU BAR --- */
+        
+        /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
             top: 15px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
+            
+            /* FORCE CENTER ALIGNMENT */
             display: flex;
             justify-content: center !important;
             align-items: center !important;
@@ -47,6 +51,7 @@ st.markdown("""
             margin-right: auto !important;
         }
 
+        /* 2. Style the inner radiogroup (the 'pill' itself) */
         div[role="radiogroup"] {
             background-color: rgba(128, 128, 128, 0.1);
             padding: 5px;
@@ -54,10 +59,15 @@ st.markdown("""
             display: flex;
             flex-wrap: nowrap !important;
             overflow-x: auto;
+            
+            /* Center items inside the pill */
             justify-content: center;
+            
+            /* Center the pill itself */
             margin: 0 auto;
             width: fit-content;
             max-width: 100%;
+            
             gap: 5px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(128, 128, 128, 0.2);
@@ -126,18 +136,6 @@ st.markdown("""
             .audio-card { background-color: #1e293b; border-left: 5px solid #4da6ff; }
         }
 
-        /* --- WARM UP SECTION STYLE --- */
-        .warmup-box {
-            background-color: #fff3e0;
-            border: 1px solid #ffe0b2;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        @media (prefers-color-scheme: dark) {
-            .warmup-box { background-color: #4a3b2a; border: 1px solid #7d5a2a; }
-        }
-
         /* --- FOOTER --- */
         .footer-container {
             text-align: center;
@@ -188,49 +186,6 @@ def get_youtube_embed(video_url):
     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         <iframe src="{embed_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
-    """
-
-# Helper function for In-App Timer
-def get_timer_html(duration_sec, unique_id):
-    """
-    Creates a simple countdown timer button using HTML/JS.
-    unique_id ensures each timer operates independently.
-    """
-    return f"""
-    <div style="margin-top: 5px; margin-bottom: 5px;">
-        <button id="btn-{unique_id}" onclick="startTimer_{unique_id}()" style="
-            background-color: #0066cc; border: none; color: white; 
-            padding: 8px 16px; text-align: center; text-decoration: none; 
-            display: inline-block; font-size: 14px; border-radius: 20px; 
-            cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-            ⏱️ Start {duration_sec}s Timer
-        </button>
-        <span id="display-{unique_id}" style="margin-left: 10px; font-weight: bold; font-size: 16px; color: #0066cc;"></span>
-    </div>
-
-    <script>
-        function startTimer_{unique_id}() {{
-            var duration = {duration_sec};
-            var display = document.getElementById("display-{unique_id}");
-            var btn = document.getElementById("btn-{unique_id}");
-            
-            btn.style.display = "none"; // Hide button while running
-            display.innerHTML = duration + "s";
-            
-            var timer = setInterval(function() {{
-                duration--;
-                display.innerHTML = duration + "s";
-                
-                if (duration <= 0) {{
-                    clearInterval(timer);
-                    display.innerHTML = "✅ DONE!";
-                    btn.innerHTML = "↺ Restart";
-                    btn.style.display = "inline-block";
-                    btn.style.backgroundColor = "#28a745"; // Green for restart
-                }}
-            }}, 1000);
-        }}
-    </script>
     """
 
 # --- AUDIO CONFIGURATION ---
@@ -552,7 +507,62 @@ else:
     # --- AUDIO COACH SECTION ---
     opening_url = f"{BASE_AUDIO_URL}/{day_data['audio_opening']}"
     
-    html_code = f"""
+    # --- DYNAMIC WARM UP TIMER HTML/JS ---
+    # Defines a timer block with Start/Reset buttons and audio element for the buzzer.
+    timer_html = """
+    <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center; font-family: sans-serif;">
+        <h4 style="margin: 0 0 10px 0; color: #333;">⏱️ Dynamic Warm-Up Timer</h4>
+        <div id="timer-display" style="font-size: 32px; font-weight: bold; color: #0066cc; margin-bottom: 10px;">05:00</div>
+        
+        <button onclick="startTimer()" style="background-color: #0066cc; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-right: 5px;">Start</button>
+        <button onclick="resetTimer()" style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-size: 14px;">Reset</button>
+
+        <audio id="timer-beep">
+            <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mp3">
+        </audio>
+    </div>
+
+    <script>
+        var timeLeft = 300; // 5 minutes in seconds
+        var timerId = null;
+        var display = document.getElementById("timer-display");
+        var beep = document.getElementById("timer-beep");
+
+        function formatTime(seconds) {
+            var m = Math.floor(seconds / 60);
+            var s = seconds % 60;
+            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        }
+
+        function startTimer() {
+            if (timerId) return; // Prevent multiple clicks
+            
+            timerId = setInterval(function() {
+                timeLeft--;
+                display.innerHTML = formatTime(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    display.innerHTML = "00:00";
+                    display.style.color = "red";
+                    beep.play();
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 300;
+            display.innerHTML = "05:00";
+            display.style.color = "#0066cc";
+        }
+    </script>
+    """
+
+    # --- MAIN AUDIO PLAYER HTML/JS ---
+    audio_player_html = f"""
     <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
         <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Coach D's Audio Corner</p>
         <audio id="player" controls style="width: 100%;">
@@ -584,21 +594,12 @@ else:
         }};
     </script>
     """
-    components.html(html_code, height=160)
     
-    # --- DYNAMIC WARM-UP SECTION (ADDED) ---
-    with st.expander("🔥 PRE-GAME PREP (Dynamic Warm-Up)", expanded=True):
-        st.markdown("""
-        **Do this before starting the main sets. Complete 1 round.**
-        * **Jumping Jacks:** 30 seconds
-        * **Arm Circles:** 15 seconds forward / 15 seconds back
-        * **Torso Twists:** 30 seconds
-        * **High Knees:** 30 seconds (in place)
-        """)
-        # Add a timer for the whole warm up set roughly
-        components.html(get_timer_html(30, "warmup"), height=50)
-
-    st.divider()
+    # Render Audio Player first
+    components.html(audio_player_html, height=160)
+    
+    # Render Timer second
+    components.html(timer_html, height=180)
     
     # Loop through exercises
     for i, ex in enumerate(day_data['exercises'], 1):
@@ -611,17 +612,6 @@ else:
                 <div><strong>Reps:</strong> {ex['reps']}</div>
             </div>
             """, unsafe_allow_html=True)
-            
-            # --- IN-APP TIMER LOGIC (ADDED) ---
-            # If the reps text contains 'sec', show a timer button
-            if 'sec' in ex['reps'].lower():
-                # Extract number of seconds (simple parsing)
-                try:
-                    duration = int(''.join(filter(str.isdigit, ex['reps'])))
-                    # Use a unique ID based on exercise index to prevent conflict
-                    components.html(get_timer_html(duration, f"timer_{i}"), height=50)
-                except:
-                    pass # Skip if parsing fails
             
             video_html = get_youtube_embed(ex['video'])
             if video_html:
