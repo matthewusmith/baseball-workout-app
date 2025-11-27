@@ -142,6 +142,22 @@ st.markdown("""
         @media (prefers-color-scheme: dark) {
             .footer-link { color: #4da6ff; }
         }
+        
+        /* --- CONTACT PAGE STYLES --- */
+        .contact-header {
+            color: var(--primary-color);
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .contact-info {
+            background-color: var(--secondary-background-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -174,7 +190,7 @@ st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>',
 # 4. Top Navigation Menu
 page = st.radio(
     "Navigation", 
-    ["Home", "Monday", "Wednesday", "Friday", "Stretching"], 
+    ["Home", "Mon", "Wed", "Fr", "Stretching", "Contact"], 
     horizontal=True,
     label_visibility="collapsed"
 )
@@ -403,6 +419,46 @@ if page == "Home":
     """)
     
     # Footer Section
+    st.markdown("""
+        <div class="footer-container">
+            <p>Powered by</p>
+            <a href="https://revealbetter.com" target="_blank">
+                <img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(6).png" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
+            </a>
+            <p style="font-size: 14px;">Unlock your athletic potential with personalized coaching and programs.</p>
+            <a class="footer-link" href="https://revealbetter.com" target="_blank">Visit revealbetter.com</a>
+        </div>
+    """, unsafe_allow_html=True)
+
+elif page == "Contact":
+    # --- CONTACT PAGE ---
+    st.title("Contact Reveal")
+    
+    # Placeholder Video for "Learn about Reveal"
+    # Using a high-quality baseball training related video as a placeholder since a specific one wasn't provided
+    st.video("https://www.youtube.com/watch?v=0bBOyC9E9F0")
+    
+    st.markdown("""
+    <div class="contact-header">About Reveal Better</div>
+    <p>At Reveal Better, we believe every athlete has another level they haven't unlocked yet. We combine data-driven training with old-school work ethic to help baseball players maximize their potential. From youth development to elite performance, we provide the roadmap; you provide the effort.</p>
+    
+    <div class="contact-header">Our Services</div>
+    <ul>
+        <li><strong>Personalized Coaching:</strong> 1-on-1 instruction tailored to your specific mechanical needs and goals.</li>
+        <li><strong>Strength & Agility Programs:</strong> Comprehensive gym and field work designed to translate directly to game performance.</li>
+        <li><strong>Remote Programming:</strong> Get elite coaching anywhere in the world with our app-based training plans.</li>
+        <li><strong>Team Clinics:</strong> Specialized workshops for teams looking to gain a competitive edge.</li>
+    </ul>
+    
+    <div class="contact-info">
+        <div style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">Reveal, LLC</div>
+        <p>📍 6800 Wisconsin Avenue<br>Chevy Chase, Maryland 20815<br>United States</p>
+        <p>📧 <a href="mailto:info@revealbetter.com">info@revealbetter.com</a></p>
+        <p>📞 <a href="tel:2027687648">(202) 768-7648</a></p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Footer Section (Reused)
     st.markdown("""
         <div class="footer-container">
             <p>Powered by</p>
