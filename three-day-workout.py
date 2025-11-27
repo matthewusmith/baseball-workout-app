@@ -446,7 +446,14 @@ elif page == "Contact":
     
     # Placeholder Video for "Learn about Reveal"
     # Using a high-quality baseball training related video as a placeholder since a specific one wasn't provided
-    st.video("https://www.youtube.com/watch?v=0bBOyC9E9F0")
+    video_url = "https://www.youtube.com/watch?v=KKjuRJh_3LY&list=PLGmxyVGSCDKvmLInHxJ9VdiwEb82Lxd2E&index=20"
+    
+    # Use custom embed function to enable looping and autoplay
+    video_html = get_youtube_embed(video_url)
+    if video_html:
+        st.markdown(video_html, unsafe_allow_html=True)
+    else:
+        st.video(video_url)
     
     st.markdown("""
     <div class="contact-header">About Reveal</div>
