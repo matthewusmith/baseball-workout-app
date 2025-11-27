@@ -33,16 +33,12 @@ st.markdown("""
         }
 
         /* --- MODERN STICKY MENU BAR --- */
-        
-        /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
             top: 15px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
-            
-            /* FORCE CENTER ALIGNMENT */
             display: flex;
             justify-content: center !important;
             align-items: center !important;
@@ -51,7 +47,6 @@ st.markdown("""
             margin-right: auto !important;
         }
 
-        /* 2. Style the inner radiogroup (the 'pill' itself) */
         div[role="radiogroup"] {
             background-color: rgba(128, 128, 128, 0.1);
             padding: 5px;
@@ -59,15 +54,10 @@ st.markdown("""
             display: flex;
             flex-wrap: nowrap !important;
             overflow-x: auto;
-            
-            /* Center items inside the pill */
             justify-content: center;
-            
-            /* Center the pill itself */
             margin: 0 auto;
             width: fit-content;
             max-width: 100%;
-            
             gap: 5px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(128, 128, 128, 0.2);
@@ -78,7 +68,7 @@ st.markdown("""
             background-color: transparent;
             border: none;
             border-radius: 10px;
-            padding: 8px 15px;
+            padding: 8px 12px;
             margin: 0;
             flex-grow: 0;
             text-align: center;
@@ -87,7 +77,7 @@ st.markdown("""
             color: var(--text-color);
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 60px;
+            min-width: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -184,12 +174,12 @@ st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>',
 # 4. Top Navigation Menu
 page = st.radio(
     "Navigation", 
-    ["Home", "Monday", "Wednesday", "Friday"], 
+    ["Home", "Monday", "Wednesday", "Friday", "Stretching"], 
     horizontal=True,
     label_visibility="collapsed"
 )
 
-# 5. Define the Workout Data (Removed Tips Lists)
+# 5. Define the Workout Data
 program = {
     "Monday": {
         "focus": "Leg Power & Linear Speed",
@@ -313,6 +303,47 @@ program = {
                 "why": "Full body power. Focus on balance."
             }
         ]
+    },
+    "Stretching": {
+        "focus": "Arm Care & Hip Mobility",
+        "audio_opening": "stretching_opening.mp3",
+        "exercises": [
+            {
+                "name": "Cross-Body Shoulder Stretch",
+                "sets": "2",
+                "reps": "30 sec/arm",
+                "video": "https://www.youtube.com/watch?v=PD3gQO5d9h8",
+                "why": "Loosens the posterior shoulder capsule, crucial for throwers."
+            },
+            {
+                "name": "Kneeling Hip Flexor Stretch",
+                "sets": "2",
+                "reps": "45 sec/leg",
+                "video": "https://www.youtube.com/watch?v=YQmpO9VT2X4",
+                "why": "Opens tight hips to allow for better rotation when hitting and throwing."
+            },
+            {
+                "name": "Seated T-Spine Twist",
+                "sets": "2",
+                "reps": "30 sec/side",
+                "video": "https://www.youtube.com/watch?v=1f33p89jX7E",
+                "why": "Improves thoracic mobility, essential for safe rotation."
+            },
+            {
+                "name": "Wrist & Forearm Stretch",
+                "sets": "2",
+                "reps": "30 sec/arm",
+                "video": "https://www.youtube.com/watch?v=0P9X_X0q0Jg",
+                "why": "Prevents elbow strain by keeping the forearm muscles loose."
+            },
+            {
+                "name": "Child's Pose",
+                "sets": "2",
+                "reps": "60 seconds",
+                "video": "https://www.youtube.com/watch?v=2MJGg-dUKh0",
+                "why": "Decompresses the spine and relaxes the lats after a long week."
+            }
+        ]
     }
 }
 
@@ -323,11 +354,9 @@ if page == "Home":
     # --- AUDIO INTRO SECTION (With Autoplay) ---
     opening_url = f"{BASE_AUDIO_URL}/home_intro.mp3"
     
-    # We use the same HTML/JS injection as the workout pages to enable autoplay
     html_code = f"""
     <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
         <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Listen: Program Intro from Coach D</p>
-        <!-- The Audio Element -->
         <audio id="player" controls style="width: 100%;">
             <source src="{opening_url}" type="audio/mp3">
             Your browser does not support the audio element.
@@ -341,7 +370,6 @@ if page == "Home":
         var player = document.getElementById("player");
         var statusLabel = document.getElementById("status");
         
-        // 1. Try to Autoplay
         var promise = player.play();
         if (promise !== undefined) {{
             promise.then(_ => {{
@@ -358,7 +386,6 @@ if page == "Home":
         }};
     </script>
     """
-    
     components.html(html_code, height=160)
     
     st.markdown("""
@@ -375,7 +402,7 @@ if page == "Home":
     **Coach's Tip:** consistency is key. Don't skip a day, don't cheat yourself!  Results guaranteed after 12 weeks.
     """)
     
-    # Footer Section with Logo and Link
+    # Footer Section
     st.markdown("""
         <div class="footer-container">
             <p>Powered by</p>
@@ -395,17 +422,12 @@ else:
     st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{page} Workout</h3>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align: center; font-style: italic; color: #555; margin-bottom: 25px;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
     
-    # --- AUDIO COACH SECTION (Opening Only) ---
-    
-    # 1. Prepare URL
+    # --- AUDIO COACH SECTION ---
     opening_url = f"{BASE_AUDIO_URL}/{day_data['audio_opening']}"
     
-    # 2. Inject HTML/JS for Autoplay (No looping tips)
-    # We use st.components.v1.html to create an isolated frame that handles the audio events
     html_code = f"""
     <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
         <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Coach D's Audio Corner</p>
-        <!-- The Audio Element -->
         <audio id="player" controls style="width: 100%;">
             <source src="{opening_url}" type="audio/mp3">
             Your browser does not support the audio element.
@@ -419,9 +441,6 @@ else:
         var player = document.getElementById("player");
         var statusLabel = document.getElementById("status");
         
-        // 1. Try to Autoplay the Opening immediately
-        // Note: Browsers may block this until user interaction. 
-        // We catch the error to show a friendly status.
         var promise = player.play();
         if (promise !== undefined) {{
             promise.then(_ => {{
@@ -438,16 +457,13 @@ else:
         }};
     </script>
     """
-    
     components.html(html_code, height=160)
     
-    # Loop through exercises and display them
+    # Loop through exercises
     for i, ex in enumerate(day_data['exercises'], 1):
         with st.container():
-            # Exercise Name
             st.markdown(f"#### {i}. {ex['name']}")
             
-            # Sets/Reps Box (Updated with larger font)
             st.markdown(f"""
             <div class="stats-box">
                 <div><strong>Sets:</strong> {ex['sets']}</div>
@@ -455,19 +471,15 @@ else:
             </div>
             """, unsafe_allow_html=True)
             
-            # Video Embed
             video_html = get_youtube_embed(ex['video'])
             if video_html:
                 st.markdown(video_html, unsafe_allow_html=True)
             else:
                 st.video(ex['video'])
             
-            # Coach's Note
             st.info(f"**💡 Coach's Note:** {ex['why']}")
-            
             st.divider()
 
-    # Completion Button
     if st.button(f"Mark {page} Complete ✅"):
         st.balloons()
         st.success("Workout Recorded! Great job today.")
