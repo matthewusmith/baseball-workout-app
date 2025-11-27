@@ -168,6 +168,21 @@ st.markdown("""
             margin-top: 20px;
             border-left: 5px solid var(--primary-color);
         }
+
+        /* --- SCROLL SNAPPING --- */
+        /* Apply snap behavior to the main app container */
+        section[data-testid="stAppViewContainer"] {
+            scroll-snap-type: y proximity; /* 'proximity' feels smoother than 'mandatory' */
+            scroll-behavior: smooth;
+        }
+        
+        /* The invisible anchor we place above each exercise */
+        .exercise-snap-target {
+            scroll-snap-align: start;
+            scroll-margin-top: 100px; /* Offset to clear the sticky menu */
+            display: block;
+            height: 1px; 
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -629,6 +644,9 @@ else:
     # Loop through exercises
     for i, ex in enumerate(day_data['exercises'], 1):
         with st.container():
+            # Inject Snap Target Anchor
+            st.markdown('<div class="exercise-snap-target"></div>', unsafe_allow_html=True)
+            
             st.markdown(f"#### {i}. {ex['name']}")
             
             st.markdown(f"""
