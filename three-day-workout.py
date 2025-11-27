@@ -22,18 +22,12 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
-        /* REDUCE TOP PADDING */
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 0px; /* Reduced margin */
+            margin-top: 10px;
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -43,7 +37,7 @@ st.markdown("""
         /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
-            top: 0px; /* Adjusted for less padding */
+            top: 15px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
@@ -611,24 +605,26 @@ else:
     # Render Audio Player first
     components.html(audio_player_html, height=160)
     
-    # Columns for Side-by-Side Layout
-    w_col1, w_col2 = st.columns([1.5, 1])
-    
-    with w_col1:
-        # Warm Up Instructions
-        st.markdown("""
-        **🔥 Dynamic Warm-Up (6 Min - 2 Rounds)**
-        * **Jumping Jacks** (30s)
-        * **Arm Circles** (30s)
-        * **High Knees** (30s) 
-        * **Butt Kicks** (30s)
-        * **Torso Twists** (30s)
-        * **Leg Swings** (30s)
-        """)
+    # Only show Dynamic Warm-Up on workout days, NOT on Stretch page
+    if page != "Stretch":
+        # Columns for Side-by-Side Layout
+        w_col1, w_col2 = st.columns([1.5, 1])
+        
+        with w_col1:
+            # Warm Up Instructions
+            st.markdown("""
+            **🔥 Dynamic Warm-Up (6 Min - 2 Rounds)**
+            * **Jumping Jacks** (30s)
+            * **Arm Circles** (30s)
+            * **High Knees** (30s) 
+            * **Butt Kicks** (30s)
+            * **Torso Twists** (30s)
+            * **Leg Swings** (30s)
+            """)
 
-    with w_col2:
-        # Render Timer
-        components.html(timer_html, height=135)
+        with w_col2:
+            # Render Timer
+            components.html(timer_html, height=135)
     
     # Loop through exercises
     for i, ex in enumerate(day_data['exercises'], 1):
