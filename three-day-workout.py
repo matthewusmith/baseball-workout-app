@@ -511,8 +511,8 @@ else:
     # Defines a timer block with Start/Reset buttons and audio element for the buzzer.
     timer_html = """
     <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 10px; margin-bottom: 5px; text-align: center; font-family: sans-serif;">
-        <h4 style="margin: 0 0 5px 0; color: #333; font-size: 16px;">⏱️ Warm-Up Timer</h4>
-        <div id="timer-display" style="font-size: 24px; font-weight: bold; color: #0066cc; margin-bottom: 5px;">05:00</div>
+        <h4 style="margin: 0 0 5px 0; color: #333; font-size: 16px;">⏱️ Warm-Up Timer (Intervals)</h4>
+        <div id="timer-display" style="font-size: 24px; font-weight: bold; color: #0066cc; margin-bottom: 5px;">06:00</div>
         
         <button onclick="startTimer()" style="background-color: #0066cc; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-right: 5px;">Start</button>
         <button onclick="resetTimer()" style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">Reset</button>
@@ -523,7 +523,7 @@ else:
     </div>
 
     <script>
-        var timeLeft = 300; // 5 minutes in seconds
+        var timeLeft = 360; // 6 minutes in seconds
         var timerId = null;
         var display = document.getElementById("timer-display");
         var beep = document.getElementById("timer-beep");
@@ -541,6 +541,13 @@ else:
                 timeLeft--;
                 display.innerHTML = formatTime(timeLeft);
                 
+                // Play sound every 30 seconds (Interval Logic)
+                if (timeLeft > 0 && timeLeft % 30 === 0) {
+                    beep.pause();
+                    beep.currentTime = 0;
+                    beep.play();
+                }
+                
                 if (timeLeft <= 0) {
                     clearInterval(timerId);
                     timerId = null;
@@ -554,8 +561,8 @@ else:
         function resetTimer() {
             clearInterval(timerId);
             timerId = null;
-            timeLeft = 300;
-            display.innerHTML = "05:00";
+            timeLeft = 360;
+            display.innerHTML = "06:00";
             display.style.color = "#0066cc";
         }
     </script>
@@ -604,7 +611,7 @@ else:
     with w_col1:
         # Warm Up Instructions
         st.markdown("""
-        **🔥 Dynamic Warm-Up (5 Min)**
+        **🔥 Dynamic Warm-Up (6 Min - 2 Rounds)**
         * **Jumping Jacks** (30s)
         * **Arm Circles** (30s)
         * **High Knees** (30s) 
