@@ -33,18 +33,25 @@ st.markdown("""
         }
 
         /* --- MODERN STICKY MENU BAR --- */
+        
+        /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
             top: 15px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
-            /* CENTER ALIGNMENT FIX */
+            
+            /* FORCE CENTER ALIGNMENT */
             display: flex;
-            justify-content: center;
+            justify-content: center !important;
+            align-items: center !important;
             width: 100%;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
 
+        /* 2. Style the inner radiogroup (the 'pill' itself) */
         div[role="radiogroup"] {
             background-color: rgba(128, 128, 128, 0.1);
             padding: 5px;
@@ -52,10 +59,15 @@ st.markdown("""
             display: flex;
             flex-wrap: nowrap !important;
             overflow-x: auto;
+            
+            /* Center items inside the pill */
             justify-content: center;
+            
+            /* Center the pill itself */
             margin: 0 auto;
             width: fit-content;
             max-width: 100%;
+            
             gap: 5px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(128, 128, 128, 0.2);
