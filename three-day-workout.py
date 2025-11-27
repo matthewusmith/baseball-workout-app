@@ -308,11 +308,46 @@ program = {
 if page == "Home":
     st.image("https://images.unsplash.com/photo-1680120846170-cb4bc948c797?q=80&w=1000&auto=format&fit=crop", caption="Train Hard, Play Hard")
     
-    # --- AUDIO INTRO SECTION ---
-    st.markdown('<div class="audio-card">', unsafe_allow_html=True)
-    st.markdown("**🔊 Listen: Program Intro from Coach D**")
-    st.audio(f"{BASE_AUDIO_URL}/home_intro.mp3")
-    st.markdown('</div>', unsafe_allow_html=True)
+    # --- AUDIO INTRO SECTION (With Autoplay) ---
+    opening_url = f"{BASE_AUDIO_URL}/home_intro.mp3"
+    
+    # We use the same HTML/JS injection as the workout pages to enable autoplay
+    html_code = f"""
+    <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
+        <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Listen: Program Intro from Coach D</p>
+        <!-- The Audio Element -->
+        <audio id="player" controls style="width: 100%;">
+            <source src="{opening_url}" type="audio/mp3">
+            Your browser does not support the audio element.
+        </audio>
+        <p id="status" style="font-size: 12px; color: #666; margin-top: 5px; font-style: italic;">
+            Playing Intro...
+        </p>
+    </div>
+
+    <script>
+        var player = document.getElementById("player");
+        var statusLabel = document.getElementById("status");
+        
+        // 1. Try to Autoplay
+        var promise = player.play();
+        if (promise !== undefined) {{
+            promise.then(_ => {{
+                console.log("Autoplay started!");
+                statusLabel.innerHTML = "Playing Intro...";
+            }}).catch(error => {{
+                console.log("Autoplay prevented.");
+                statusLabel.innerHTML = "Autoplay blocked by browser. Please press Play to start.";
+            }});
+        }}
+
+        player.onended = function() {{
+            statusLabel.innerHTML = "Intro finished. Let's get to work!";
+        }};
+    </script>
+    """
+    
+    components.html(html_code, height=160)
     
     st.markdown("""
     Welcome to Coach D's 12-week program. This program is designed to build:
@@ -392,7 +427,6 @@ else:
     </script>
     """
     
-    # Inject the HTML
     components.html(html_code, height=160)
     
     # Loop through exercises and display them
