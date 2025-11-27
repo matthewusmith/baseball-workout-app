@@ -173,12 +173,11 @@ page = st.radio(
     label_visibility="collapsed"
 )
 
-# 5. Define the Workout Data (Updated with Tips Files)
+# 5. Define the Workout Data (Removed Tips Lists)
 program = {
     "Monday": {
         "focus": "Leg Power & Linear Speed",
         "audio_opening": "monday_opening.mp3",
-        "audio_tips": ["monday_tip_1.mp3", "monday_tip_2.mp3", "monday_tip_3.mp3", "monday_tip_4.mp3", "monday_tip_5.mp3"],
         "exercises": [
             {
                 "name": "Burpee Broad Jumps",
@@ -220,7 +219,6 @@ program = {
     "Wednesday": {
         "focus": "Upper Body Strength & Rotational Control",
         "audio_opening": "wednesday_opening.mp3",
-        "audio_tips": ["wednesday_tip_1.mp3", "wednesday_tip_2.mp3", "wednesday_tip_3.mp3", "wednesday_tip_4.mp3", "wednesday_tip_5.mp3"],
         "exercises": [
             {
                 "name": "Push-Ups with T-Rotation",
@@ -262,7 +260,6 @@ program = {
     "Friday": {
         "focus": "Agility, Lateral Movement & Conditioning",
         "audio_opening": "friday_opening.mp3",
-        "audio_tips": ["friday_tip_1.mp3", "friday_tip_2.mp3", "friday_tip_3.mp3", "friday_tip_4.mp3", "friday_tip_5.mp3"],
         "exercises": [
             {
                 "name": "Skater Jumps (Lateral)",
@@ -347,14 +344,12 @@ else:
     st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{page} Workout</h3>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align: center; font-style: italic; color: #555; margin-bottom: 25px;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
     
-    # --- SMART AUDIO COACH (Autoplay & Loop) ---
+    # --- AUDIO COACH SECTION (Opening Only) ---
     
-    # 1. Prepare URLs
+    # 1. Prepare URL
     opening_url = f"{BASE_AUDIO_URL}/{day_data['audio_opening']}"
-    # Create full URLs for tips
-    tips_urls = [f"{BASE_AUDIO_URL}/{tip}" for tip in day_data['audio_tips']]
     
-    # 2. Inject HTML/JS for Autoplay and Interval Logic
+    # 2. Inject HTML/JS for Autoplay (No looping tips)
     # We use st.components.v1.html to create an isolated frame that handles the audio events
     html_code = f"""
     <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
@@ -365,7 +360,7 @@ else:
             Your browser does not support the audio element.
         </audio>
         <p id="status" style="font-size: 12px; color: #666; margin-top: 5px; font-style: italic;">
-            Playing Opening... (Next tip in 5 minutes)
+            Playing Opening...
         </p>
     </div>
 
@@ -373,11 +368,6 @@ else:
         var player = document.getElementById("player");
         var statusLabel = document.getElementById("status");
         
-        // Data passed from Python
-        var tips = {json.dumps(tips_urls)};
-        var opening = "{opening_url}";
-        var isOpening = true;
-
         // 1. Try to Autoplay the Opening immediately
         // Note: Browsers may block this until user interaction. 
         // We catch the error to show a friendly status.
@@ -385,34 +375,16 @@ else:
         if (promise !== undefined) {{
             promise.then(_ => {{
                 console.log("Autoplay started!");
+                statusLabel.innerHTML = "Playing Opening...";
             }}).catch(error => {{
                 console.log("Autoplay prevented.");
                 statusLabel.innerHTML = "Autoplay blocked by browser. Please press Play to start.";
             }});
         }}
 
-        // 2. Logic to run when audio finishes
         player.onended = function() {{
-            if (isOpening) {{
-                // Opening finished. Wait 5 minutes (300,000 ms) then play a tip.
-                isOpening = false;
-                statusLabel.innerHTML = "Opening finished. Coaching tip coming in 5 minutes...";
-                setTimeout(playRandomTip, 300000); 
-            }} else {{
-                // Tip finished. Wait 5 minutes then play another.
-                statusLabel.innerHTML = "Tip finished. Next tip in 5 minutes...";
-                setTimeout(playRandomTip, 300000);
-            }}
+            statusLabel.innerHTML = "Opening finished. Good luck with the workout!";
         }};
-
-        // 3. Helper to play a random tip
-        function playRandomTip() {{
-            var randomIndex = Math.floor(Math.random() * tips.length);
-            player.src = tips[randomIndex];
-            player.load();
-            statusLabel.innerHTML = "Playing Tip #" + (randomIndex + 1);
-            player.play();
-        }}
     </script>
     """
     
