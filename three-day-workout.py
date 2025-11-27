@@ -32,13 +32,13 @@ st.markdown("""
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* --- MODERN STICKY MENU BAR --- */
+        /* --- MODERN STICKY MENU BAR (TOP LEVEL) --- */
         div[data-testid="stRadio"] {
             position: sticky;
             top: 15px; 
             z-index: 1000;
             background-color: transparent;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
             display: flex;
             justify-content: center !important;
             align-items: center !important;
@@ -70,7 +70,7 @@ st.markdown("""
             border-radius: 10px;
             padding: 8px 12px;
             margin: 0;
-            flex-grow: 0;
+            flex-grow: 1; /* Allow buttons to expand evenly */
             text-align: center;
             font-weight: 600;
             font-size: 14px;
@@ -187,13 +187,24 @@ BASE_AUDIO_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{
 # 3. Main Header
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
-# 4. Top Navigation Menu
-page = st.radio(
+# 4. Two-Tier Navigation System
+# Top Level: Categories
+top_nav = st.radio(
     "Navigation", 
-    ["Home", "Monday", "Wednesday", "Friday", "Stretching", "Contact"], 
+    ["Home", "Workouts", "Contact"], 
     horizontal=True,
     label_visibility="collapsed"
 )
+
+# Logic to determine the actual page content
+if top_nav == "Workouts":
+    # Sub Level: Dropdown for specific workout days (Mobile Friendly)
+    page = st.selectbox(
+        "Choose your session:", 
+        ["Monday", "Wednesday", "Friday", "Stretching"]
+    )
+else:
+    page = top_nav
 
 # 5. Define the Workout Data
 program = {
