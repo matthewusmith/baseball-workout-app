@@ -25,12 +25,18 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
+        /* REDUCE TOP PADDING */
+        .block-container {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 10px;
+            margin-top: 0px; /* Reduced margin */
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -40,7 +46,7 @@ st.markdown("""
         /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
-            top: 15px; 
+            top: 10px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
@@ -197,7 +203,6 @@ def get_youtube_embed(video_url):
     """
 
 # --- GOOGLE SHEETS SETUP ---
-# Scope required to access Sheets and Drive
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
@@ -205,28 +210,34 @@ SCOPES = [
 
 def submit_feedback(page_name, rating, comment):
     """
-    Connects to Google Sheets and appends the feedback.
-    Requires 'service_account.json' in the same folder.
+    Connects to Google Sheets and appends the feedback using Streamlit Secrets.
+    Handles both Dictionary and String formats for secrets.
     """
     try:
-        # Load credentials from the JSON file
-        # IMPORTANT: Ensure 'service_account.json' is in your project folder
-        creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
+        # Check if secret exists
+        if "gcp_service_account" not in st.secrets:
+            # Fallback for local testing
+            creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
+        else:
+            # Load from secrets
+            secret_value = st.secrets["gcp_service_account"]
+            
+            # Smart Handling: Check if it's a JSON string or already a Dict
+            if isinstance(secret_value, str):
+                creds_dict = json.loads(secret_value)
+            else:
+                creds_dict = secret_value
+                
+            creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+            
         client = gspread.authorize(creds)
-        
-        # Open the Sheet
-        # IMPORTANT: Ensure your Google Sheet is named exactly "baseball-app-feedback"
         sheet = client.open("baseball-app-feedback").sheet1
         
-        # Get current timestamp
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        # Append row: Date, Page, Rating, Comment
         sheet.append_row([timestamp, page_name, rating, comment])
         return True
     except Exception as e:
-        # If running locally without keys, this will print the error
-        # st.error(f"Error details: {e}") 
+        # print(f"Error: {e}") 
         return False
 
 # --- AUDIO CONFIGURATION ---
