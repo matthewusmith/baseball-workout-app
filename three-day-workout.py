@@ -1,6 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import json
+import datetime
+import gspread
+from google.oauth2.service_account import Credentials
 
 # 1. Page Configuration
 st.set_page_config(
@@ -167,6 +170,12 @@ st.markdown("""
             margin-top: 20px;
             border-left: 5px solid var(--primary-color);
         }
+        
+        /* --- FEEDBACK FORM STYLES --- */
+        .stSelectSlider {
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -186,6 +195,39 @@ def get_youtube_embed(video_url):
         <iframe src="{embed_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
     """
+
+# --- GOOGLE SHEETS SETUP ---
+# Scope required to access Sheets and Drive
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
+
+def submit_feedback(page_name, rating, comment):
+    """
+    Connects to Google Sheets and appends the feedback.
+    Requires 'service_account.json' in the same folder.
+    """
+    try:
+        # Load credentials from the JSON file
+        # IMPORTANT: Ensure 'service_account.json' is in your project folder
+        creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
+        client = gspread.authorize(creds)
+        
+        # Open the Sheet
+        # IMPORTANT: Ensure your Google Sheet is named exactly "baseball-app-feedback"
+        sheet = client.open("baseball-app-feedback").sheet1
+        
+        # Get current timestamp
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Append row: Date, Page, Rating, Comment
+        sheet.append_row([timestamp, page_name, rating, comment])
+        return True
+    except Exception as e:
+        # If running locally without keys, this will print the error
+        # st.error(f"Error details: {e}") 
+        return False
 
 # --- AUDIO CONFIGURATION ---
 GITHUB_USER = "matthewusmith" 
@@ -646,6 +688,37 @@ else:
             st.info(f"**💡 Coach's Note:** {ex['why']}")
             st.divider()
 
+    # --- FEEDBACK FORM ---
+    st.subheader("📝 Rate this Session")
+    
+    # We use a form so the page doesn't reload on every input change
+    with st.form(key=f"feedback_form_{page}"):
+        st.write("How was the intensity today?")
+        
+        # Select Slider for Rating
+        rating = st.select_slider(
+            "Difficulty Rating",
+            options=["Too Easy", "Just Right", "Too Hard"],
+            value="Just Right",
+            label_visibility="collapsed"
+        )
+        
+        # Text Area for Comments
+        comment = st.text_area(
+            "Any pain, issues, or notes?", 
+            placeholder="Shoulder felt good, burpees were tough..."
+        )
+        
+        # Submit Button
+        submit_btn = st.form_submit_button("Submit Feedback")
+        
+        if submit_btn:
+            if submit_feedback(page, rating, comment):
+                st.success("Thanks! Feedback sent to Coach D.")
+            else:
+                st.error("Could not connect to database. Please check your internet connection or API setup.")
+
+    # Mark Complete Button (Visual only)
     if st.button(f"Mark {page} Complete ✅"):
         st.balloons()
         st.success("Workout Recorded! Great job today.")
