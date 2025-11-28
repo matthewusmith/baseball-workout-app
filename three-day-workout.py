@@ -22,18 +22,12 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
-        /* REDUCE TOP PADDING */
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 0px; /* Reduced margin */
+            margin-top: 10px;
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -43,7 +37,7 @@ st.markdown("""
         /* 1. Target the main Streamlit Radio container */
         div[data-testid="stRadio"] {
             position: sticky;
-            top: 10px; 
+            top: 15px; 
             z-index: 1000;
             background-color: transparent;
             padding-bottom: 10px;
