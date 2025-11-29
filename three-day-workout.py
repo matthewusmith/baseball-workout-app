@@ -182,21 +182,6 @@ st.markdown("""
             padding-top: 10px;
             padding-bottom: 20px;
         }
-
-        /* --- BURNOUT EXPANDER STYLING --- */
-        /* Targets the text inside the expander summary */
-        div[data-testid="stExpander"] details summary p {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #d9534f; /* Intense Red */
-            text-align: center;
-            width: 100%;
-        }
-        
-        /* Optional: Center the chevron arrow as well */
-        div[data-testid="stExpander"] details summary {
-            justify-content: center;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -729,12 +714,12 @@ else:
     # --- BURNOUT SECTION (Optional) ---
     if "burnout" in day_data:
         # Use an Expander so it's hidden/optional by default
-        with st.expander("🔥🔥🔥 OPTIONAL: THE BURNOUT ROUND 🔥🔥🔥", expanded=False):
+        with st.expander("🔥 OPTIONAL: The Burnout Round", expanded=False):
             # Styling container using st.error for red alert look
             st.error("⚠️ Warning: This section is for those who want to empty the tank. Proceed with caution!")
             
             bo = day_data['burnout']
-            st.markdown(f"### {bo['name']}") # Reverted to simple header
+            st.markdown(f"<h2 style='text-align: center; font-weight: 900; color: #d9534f;'>🔥🔥 {bo['name']} 🔥🔥</h2>", unsafe_allow_html=True)
             st.markdown(f"**Target:** {bo['reps']}")
             
             # Embed video
