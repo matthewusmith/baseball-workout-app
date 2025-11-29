@@ -25,18 +25,12 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
-        /* REDUCE TOP PADDING */
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 0px; /* Reduced margin */
+            margin-top: 10px; /* Restored margin */
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -714,7 +708,7 @@ else:
     # --- BURNOUT SECTION (Optional) ---
     if "burnout" in day_data:
         # Use an Expander so it's hidden/optional by default
-        with st.expander("🔥 OPTIONAL: The Burnout Round", expanded=False):
+        with st.expander("🔥🔥🔥 OPTIONAL: THE BURNOUT ROUND 🔥🔥🔥", expanded=False):
             # Styling container using st.error for red alert look
             st.error("⚠️ Warning: This section is for those who want to empty the tank. Proceed with caution!")
             
