@@ -5,7 +5,7 @@ import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 
-# --- APP ICON CONFIGURATION ---
+# --- APP ICON CONFIGURATION (For iPhone Home Screen) ---
 # Replace 'app_icon.png' if you named your file something else on GitHub
 ICON_FILENAME = "app_icon.png" 
 GITHUB_USER = "matthewusmith" 
@@ -35,9 +35,9 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
-        /* REDUCE TOP PADDING */
+        /* INCREASE TOP PADDING TO FIX HEADER VISIBILITY */
         .block-container {
-            padding-top: 1rem !important;
+            padding-top: 3rem !important; /* Increased space at top */
             padding-bottom: 1rem !important;
         }
 
@@ -46,7 +46,7 @@ st.markdown("""
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 10px; /* Restored margin */
+            margin-top: 0px; 
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
