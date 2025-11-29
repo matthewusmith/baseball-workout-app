@@ -214,20 +214,15 @@ def submit_feedback(page_name, rating, comment):
     Handles both Dictionary and String formats for secrets.
     """
     try:
-        # Check if secret exists
         if "gcp_service_account" not in st.secrets:
             # Fallback for local testing
             creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
         else:
-            # Load from secrets
             secret_value = st.secrets["gcp_service_account"]
-            
-            # Smart Handling: Check if it's a JSON string or already a Dict
             if isinstance(secret_value, str):
                 creds_dict = json.loads(secret_value)
             else:
                 creds_dict = secret_value
-                
             creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
             
         client = gspread.authorize(creds)
@@ -237,7 +232,6 @@ def submit_feedback(page_name, rating, comment):
         sheet.append_row([timestamp, page_name, rating, comment])
         return True
     except Exception as e:
-        # print(f"Error: {e}") 
         return False
 
 # --- AUDIO CONFIGURATION ---
@@ -249,7 +243,7 @@ BASE_AUDIO_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{
 # 3. Main Header
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
-# 4. Main Navigation (Restored Radio Button Menu with Short Names)
+# 4. Main Navigation
 page = st.radio(
     "Navigation", 
     ["Home", "Mon", "Wed", "Fri", "Stretch", "Contact"], 
@@ -257,7 +251,7 @@ page = st.radio(
     label_visibility="collapsed"
 )
 
-# 5. Define the Workout Data (Keys updated to match Short Menu Names)
+# 5. Define the Workout Data (Added "burnout" key to workouts)
 program = {
     "Mon": {
         "focus": "Leg Power & Linear Speed",
@@ -298,7 +292,13 @@ program = {
                 "video": "https://www.youtube.com/watch?v=_VxxejUIIXM",
                 "why": "Builds core stability while arms are moving—mimics throwing posture."
             }
-        ]
+        ],
+        "burnout": {
+            "name": "Jump Lunges (Alternating)",
+            "reps": "Max Effort (Empty the tank!)",
+            "video": "https://www.youtube.com/watch?v=1erexKvIARE",
+            "why": "A final push to build lactic threshold and mental toughness."
+        }
     },
     "Wed": {
         "focus": "Upper Body Strength & Rotational Control",
@@ -339,7 +339,13 @@ program = {
                 "video": "https://www.youtube.com/watch?v=-cdph8hv0O0",
                 "why": "Leg endurance and mental toughness."
             }
-        ]
+        ],
+        "burnout": {
+            "name": "Diamond Push-Ups",
+            "reps": "1 Set: To Failure",
+            "video": "https://www.youtube.com/watch?v=J0DnG1_S92I",
+            "why": "Blast the triceps for throwing velocity."
+        }
     },
     "Fri": {
         "focus": "Agility, Lateral Movement & Conditioning",
@@ -380,7 +386,13 @@ program = {
                 "video": "https://www.youtube.com/watch?v=V-XjIAlF1J8",
                 "why": "Full body power. Focus on balance."
             }
-        ]
+        ],
+        "burnout": {
+            "name": "Mountain Climbers",
+            "reps": "1 Set: 60 Seconds",
+            "video": "https://www.youtube.com/watch?v=nmwgirgXLIg",
+            "why": "Core stability and cardio burnout."
+        }
     },
     "Stretch": {
         "focus": "Arm Care & Hip Mobility",
@@ -698,6 +710,27 @@ else:
             
             st.info(f"**💡 Coach's Note:** {ex['why']}")
             st.divider()
+
+    # --- BURNOUT SECTION (Optional) ---
+    if "burnout" in day_data:
+        # Use an Expander so it's hidden/optional by default
+        with st.expander("🔥 OPTIONAL: The Burnout Round", expanded=False):
+            # Styling container using st.error for red alert look
+            st.error("⚠️ Warning: This section is for those who want to empty the tank. Proceed with caution!")
+            
+            bo = day_data['burnout']
+            st.markdown(f"### {bo['name']}")
+            st.markdown(f"**Target:** {bo['reps']}")
+            
+            # Embed video
+            video_html = get_youtube_embed(bo['video'])
+            if video_html:
+                st.markdown(video_html, unsafe_allow_html=True)
+            else:
+                st.video(bo['video'])
+                
+            st.write(f"**Why:** {bo['why']}")
+            st.markdown("---")
 
     # --- FEEDBACK FORM ---
     st.subheader("📝 Rate this Session")
