@@ -719,7 +719,7 @@ else:
             st.error("⚠️ Warning: This section is for those who want to empty the tank. Proceed with caution!")
             
             bo = day_data['burnout']
-            st.markdown(f"### {bo['name']}")
+            st.markdown(f"<h2 style='text-align: center; font-weight: 900; color: #d9534f;'>🔥🔥 {bo['name']} 🔥🔥</h2>", unsafe_allow_html=True)
             st.markdown(f"**Target:** {bo['reps']}")
             
             # Embed video
