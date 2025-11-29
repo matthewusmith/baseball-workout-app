@@ -25,18 +25,12 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
-        /* REDUCE TOP PADDING */
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-        }
-
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 10px; /* Restored margin */
+            margin-top: 10px; /* Standard margin */
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
