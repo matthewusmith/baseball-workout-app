@@ -24,10 +24,11 @@ st.set_page_config(
 )
 
 # Inject the Apple Touch Icon tag for iOS
+# Added sizes="180x180" to help iOS identify it correctly
 st.markdown(
     f"""
-    <link rel="apple-touch-icon" href="{APP_ICON_URL}">
-    <link rel="shortcut icon" href="{APP_ICON_URL}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{APP_ICON_URL}">
+    <link rel="icon" type="image/png" href="{APP_ICON_URL}">
     """,
     unsafe_allow_html=True
 )
