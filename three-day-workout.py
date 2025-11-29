@@ -5,14 +5,6 @@ import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 
-# 1. Page Configuration
-st.set_page_config(
-    page_title="12-Week Strength & Agility",
-    page_icon="⚾",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
-
 # --- APP ICON CONFIGURATION (For iPhone Home Screen) ---
 # Replace 'app_icon.png' if you named your file something else on GitHub
 ICON_FILENAME = "app_icon.png" 
@@ -20,10 +12,18 @@ GITHUB_USER = "matthewusmith"
 REPO_NAME = "baseball-workout-app"
 BRANCH = "main"
 
-# Construct the raw URL
-APP_ICON_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/{ICON_FILENAME}"
+# Construct the raw URL with a cache-busting parameter (?v=1) to force updates
+APP_ICON_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/{ICON_FILENAME}?v=1"
 
-# Inject the Apple Touch Icon tag
+# 1. Page Configuration
+st.set_page_config(
+    page_title="12-Week Strength & Agility",
+    page_icon=APP_ICON_URL, # Uses your custom image instead of the baseball emoji
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# Inject the Apple Touch Icon tag for iOS
 st.markdown(
     f"""
     <link rel="apple-touch-icon" href="{APP_ICON_URL}">
