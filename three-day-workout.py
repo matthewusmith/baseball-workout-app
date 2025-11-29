@@ -5,7 +5,7 @@ import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 
-# --- APP ICON CONFIGURATION (For iPhone Home Screen) ---
+# --- APP ICON CONFIGURATION ---
 # Replace 'app_icon.png' if you named your file something else on GitHub
 ICON_FILENAME = "app_icon.png" 
 GITHUB_USER = "matthewusmith" 
@@ -21,21 +21,6 @@ st.set_page_config(
     page_icon=APP_ICON_URL, # Uses your custom image for browser tabs
     layout="centered",
     initial_sidebar_state="collapsed"
-)
-
-# --- ADVANCED ICON INJECTION ---
-# This uses JavaScript to force the apple-touch-icon into the <head> of the document
-# where iOS looks for it, rather than the <body> where Streamlit usually puts things.
-st.markdown(
-    f"""
-    <script>
-        var link = document.createElement('link');
-        link.rel = 'apple-touch-icon';
-        link.href = '{APP_ICON_URL}';
-        document.getElementsByTagName('head')[0].appendChild(link);
-    </script>
-    """,
-    unsafe_allow_html=True
 )
 
 # 2. Custom CSS for Modern UI & Sticky Menu
