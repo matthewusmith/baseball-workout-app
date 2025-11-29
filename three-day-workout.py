@@ -35,12 +35,18 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
+        /* INCREASE TOP PADDING TO FIX HEADER VISIBILITY */
+        .block-container {
+            padding-top: 3rem !important; /* Increased space at top */
+            padding-bottom: 1rem !important;
+        }
+
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 10px; /* Restored margin */
+            margin-top: 0px; 
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -71,10 +77,14 @@ st.markdown("""
             flex-wrap: nowrap !important;
             overflow-x: auto;
             
-            /* STRETCH TO FULL WIDTH */
-            justify-content: space-between; 
+            /* Center items inside the pill */
+            justify-content: center;
             align-items: center;
-            width: 100%; /* Stretch to match page width */
+            
+            /* KEY CHANGE: Shrink to fit content, then center with margin */
+            margin: 0 auto;
+            width: fit-content; 
+            max-width: 98%; /* Prevent overflow on very small screens */
             
             gap: 5px;
             backdrop-filter: blur(10px);
@@ -86,20 +96,16 @@ st.markdown("""
             background-color: transparent;
             border: none;
             border-radius: 10px;
-            padding: 8px 5px; /* Reduced padding to fit small screens */
+            padding: 8px 12px; /* Slightly reduced horizontal padding for better fit */
             margin: 0;
-            
-            /* FORCE EQUAL WIDTH DISTRIBUTION */
-            flex-grow: 1; 
-            flex-basis: 0;
-            
+            flex-grow: 0;
             text-align: center;
             font-weight: 600;
-            font-size: 13px; /* Slightly smaller font for safety */
+            font-size: 14px;
             color: var(--text-color);
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 0; /* Allow shrinking */
+            min-width: 40px; /* reduced min-width */
             display: flex;
             justify-content: center;
             align-items: center;
