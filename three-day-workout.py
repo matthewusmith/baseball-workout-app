@@ -13,6 +13,25 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# --- APP ICON CONFIGURATION (For iPhone Home Screen) ---
+# Replace 'app_icon.png' if you named your file something else on GitHub
+ICON_FILENAME = "app_icon.png" 
+GITHUB_USER = "matthewusmith" 
+REPO_NAME = "baseball-workout-app"
+BRANCH = "main"
+
+# Construct the raw URL
+APP_ICON_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/{ICON_FILENAME}"
+
+# Inject the Apple Touch Icon tag
+st.markdown(
+    f"""
+    <link rel="apple-touch-icon" href="{APP_ICON_URL}">
+    <link rel="shortcut icon" href="{APP_ICON_URL}">
+    """,
+    unsafe_allow_html=True
+)
+
 # 2. Custom CSS for Modern UI & Sticky Menu
 st.markdown("""
     <style>
@@ -25,12 +44,18 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
+        /* REDUCE TOP PADDING */
+        .block-container {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 10px; /* Standard margin */
+            margin-top: 10px; /* Restored margin */
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -323,10 +348,8 @@ def load_program_from_sheets():
         st.error(f"Error loading workout data: {e}")
         return data
 
-# --- AUDIO CONFIGURATION ---
-GITHUB_USER = "matthewusmith" 
-REPO_NAME = "baseball-workout-app"
-BRANCH = "main"
+# --- AUDIO CONFIGURATION (Used for footer images AND audio) ---
+# Note: APP_ICON_URL is defined at the top using these same variables
 BASE_AUDIO_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/audio"
 
 # 3. Main Header
