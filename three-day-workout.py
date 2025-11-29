@@ -65,7 +65,7 @@ st.markdown("""
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
+            width: 100%; /* Ensure full width */
         }
 
         /* 2. Style the inner radiogroup (the 'pill' itself) */
@@ -74,16 +74,16 @@ st.markdown("""
             padding: 5px;
             border-radius: 15px;
             display: flex;
-            flex-wrap: nowrap !important;
+            flex-wrap: nowrap !important; /* Keep mobile scrolling safe */
             overflow-x: auto;
             
-            /* Center items inside the pill */
+            /* Keep items in a row, center items with flex */
             justify-content: center;
             align-items: center;
             
-            /* Center the pill itself */
+            /* Center the pill itself—try width adjustments */
             margin: 0 auto;
-            width: fit-content;
+            width: 100%; /* Change to full width */
             max-width: 98%; /* Prevent overflow on very small screens */
             
             gap: 5px;
