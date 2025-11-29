@@ -35,18 +35,12 @@ st.markdown("""
             --text-color-dark: #FAFAFA;
         }
 
-        /* INCREASE TOP PADDING TO FIX HEADER VISIBILITY */
-        .block-container {
-            padding-top: 3rem !important; /* Increased space at top */
-            padding-bottom: 1rem !important;
-        }
-
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
             font-size: 26px;
             font-weight: 800;
-            margin-top: 0px; 
+            margin-top: 10px; /* Restored margin */
             margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
@@ -65,7 +59,7 @@ st.markdown("""
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%; /* Ensure full width */
+            width: 100%;
         }
 
         /* 2. Style the inner radiogroup (the 'pill' itself) */
@@ -74,17 +68,13 @@ st.markdown("""
             padding: 5px;
             border-radius: 15px;
             display: flex;
-            flex-wrap: nowrap !important; /* Keep mobile scrolling safe */
+            flex-wrap: nowrap !important;
             overflow-x: auto;
             
-            /* Keep items in a row, center items with flex */
-            justify-content: center;
+            /* STRETCH TO FULL WIDTH */
+            justify-content: space-between; 
             align-items: center;
-            
-            /* Center the pill itself—try width adjustments */
-            margin: 0 auto;
-            width: 100%; /* Change to full width */
-            max-width: 98%; /* Prevent overflow on very small screens */
+            width: 100%; /* Stretch to match page width */
             
             gap: 5px;
             backdrop-filter: blur(10px);
@@ -96,16 +86,20 @@ st.markdown("""
             background-color: transparent;
             border: none;
             border-radius: 10px;
-            padding: 8px 12px; /* Slightly reduced horizontal padding for better fit */
+            padding: 8px 5px; /* Reduced padding to fit small screens */
             margin: 0;
-            flex-grow: 0;
+            
+            /* FORCE EQUAL WIDTH DISTRIBUTION */
+            flex-grow: 1; 
+            flex-basis: 0;
+            
             text-align: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px; /* Slightly smaller font for safety */
             color: var(--text-color);
             transition: all 0.2s ease;
             white-space: nowrap;
-            min-width: 40px; /* reduced min-width */
+            min-width: 0; /* Allow shrinking */
             display: flex;
             justify-content: center;
             align-items: center;
