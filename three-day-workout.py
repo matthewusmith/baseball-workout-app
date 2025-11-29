@@ -223,31 +223,111 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 
-def submit_feedback(page_name, rating, comment):
-    """
-    Connects to Google Sheets and appends the feedback using Streamlit Secrets.
-    Handles both Dictionary and String formats for secrets.
-    """
+def get_gspread_client():
+    """Returns an authenticated gspread client."""
     try:
         if "gcp_service_account" not in st.secrets:
             # Fallback for local testing
             creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
         else:
+            # Load from secrets
             secret_value = st.secrets["gcp_service_account"]
             if isinstance(secret_value, str):
                 creds_dict = json.loads(secret_value)
             else:
                 creds_dict = secret_value
             creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
-            
-        client = gspread.authorize(creds)
-        sheet = client.open("baseball-app-feedback").sheet1
         
+        return gspread.authorize(creds)
+    except Exception as e:
+        st.error(f"Authentication Error: {e}")
+        return None
+
+def submit_feedback(page_name, rating, comment):
+    """Submits feedback to the 'Sheet1' tab."""
+    try:
+        client = get_gspread_client()
+        if not client: return False
+        
+        sheet = client.open("baseball-app-feedback").sheet1
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         sheet.append_row([timestamp, page_name, rating, comment])
         return True
     except Exception as e:
         return False
+
+# --- DYNAMIC CONTENT LOADING ---
+@st.cache_data(ttl=600) # Cache for 10 minutes to speed up app
+def load_program_from_sheets():
+    """
+    Fetches exercises from the 'Library' tab of the Google Sheet
+    and organizes them into the program dictionary.
+    """
+    # 1. Initialize the skeleton (Static Data)
+    data = {
+        "Mon": {
+            "focus": "Leg Power & Linear Speed",
+            "audio_opening": "monday_opening.mp3",
+            "exercises": [],
+            "burnout": None
+        },
+        "Wed": {
+            "focus": "Upper Body Strength & Rotational Control",
+            "audio_opening": "wednesday_opening.mp3",
+            "exercises": [],
+            "burnout": None
+        },
+        "Fri": {
+            "focus": "Agility, Lateral Movement & Conditioning",
+            "audio_opening": "friday_opening.mp3",
+            "exercises": [],
+            "burnout": None
+        },
+        "Stretch": {
+            "focus": "Arm Care & Hip Mobility",
+            "audio_opening": "stretching_opening.mp3",
+            "exercises": [],
+            "burnout": None
+        }
+    }
+
+    try:
+        client = get_gspread_client()
+        if not client: return data # Return skeleton if auth fails locally
+        
+        # Open the 'Library' tab
+        sheet = client.open("baseball-app-feedback").worksheet("Library")
+        records = sheet.get_all_records()
+        
+        # Parse records into the structure
+        for row in records:
+            day_key = row.get("Day")
+            
+            # Skip rows that don't match our known keys
+            if day_key not in data:
+                continue
+            
+            exercise_obj = {
+                "name": row.get("Exercise"),
+                "sets": str(row.get("Sets")),
+                "reps": str(row.get("Reps")),
+                "video": row.get("Video"),
+                "why": row.get("Note")
+            }
+            
+            # Check if it is a burnout exercise
+            is_burnout = str(row.get("Burnout")).upper() == "TRUE"
+            
+            if is_burnout:
+                data[day_key]["burnout"] = exercise_obj
+            else:
+                data[day_key]["exercises"].append(exercise_obj)
+        
+        return data
+
+    except Exception as e:
+        st.error(f"Error loading workout data: {e}")
+        return data
 
 # --- AUDIO CONFIGURATION ---
 GITHUB_USER = "matthewusmith" 
@@ -266,191 +346,8 @@ page = st.radio(
     label_visibility="collapsed"
 )
 
-# 5. Define the Workout Data (Added "burnout" key to workouts)
-program = {
-    "Mon": {
-        "focus": "Leg Power & Linear Speed",
-        "audio_opening": "monday_opening.mp3",
-        "exercises": [
-            {
-                "name": "Burpee Broad Jumps",
-                "sets": "3",
-                "reps": "10",
-                "video": "https://www.youtube.com/watch?v=dzZZAuVbkvI",
-                "why": "Builds explosive power for sprinting and jumping."
-            },
-            {
-                "name": "Alternating Reverse Lunges",
-                "sets": "3",
-                "reps": "12/leg",
-                "video": "https://www.youtube.com/watch?v=OX0fKkaY6_c",
-                "why": "Protects knees while building single-leg stability needed for throwing."
-            },
-            {
-                "name": "DB Straight Leg Jackknives",
-                "sets": "3",
-                "reps": "12/leg",
-                "video": "https://www.youtube.com/watch?v=1Q_yf422K1U",
-                "why": "Strengthens hamstrings to prevent injury and improves running mechanics."
-            },
-            {
-                "name": "Tuck Jumps",
-                "sets": "5",
-                "reps": "10 yds",
-                "video": "https://www.youtube.com/watch?v=5S8i5PMatX0",
-                "why": "Teaches explosive first-step acceleration."
-            },
-            {
-                "name": "Box Jumps",
-                "sets": "3",
-                "reps": "30 sec",
-                "video": "https://www.youtube.com/watch?v=_VxxejUIIXM",
-                "why": "Builds core stability while arms are moving—mimics throwing posture."
-            }
-        ],
-        "burnout": {
-            "name": "Jump Lunges (Alternating)",
-            "reps": "Max Effort (Empty the tank!)",
-            "video": "https://www.youtube.com/watch?v=1erexKvIARE",
-            "why": "A final push to build lactic threshold and mental toughness."
-        }
-    },
-    "Wed": {
-        "focus": "Upper Body Strength & Rotational Control",
-        "audio_opening": "wednesday_opening.mp3",
-        "exercises": [
-            {
-                "name": "Push-Ups with T-Rotation",
-                "sets": "3",
-                "reps": "10 total",
-                "video": "https://www.youtube.com/watch?v=q6g4X23wJQM",
-                "why": "Builds pushing strength and thoracic mobility for throwing."
-            },
-            {
-                "name": "Prone Y-T-W (Superman)",
-                "sets": "3",
-                "reps": "10 ea",
-                "video": "https://www.youtube.com/watch?v=2n7bFivHlC0",
-                "why": "Bulletproofs the shoulder blades and rotator cuff."
-            },
-            {
-                "name": "Bear Crawls",
-                "sets": "3",
-                "reps": "30 sec",
-                "video": "https://www.youtube.com/watch?v=t_o7a_Yt0_o",
-                "why": "Full body coordination and shoulder stability."
-            },
-            {
-                "name": "Russian Twists",
-                "sets": "3",
-                "reps": "20 total",
-                "video": "https://www.youtube.com/watch?v=wkD8rjkodUI",
-                "why": "Rotational core power for bat speed."
-            },
-            {
-                "name": "Wall Sits",
-                "sets": "3",
-                "reps": "45 sec",
-                "video": "https://www.youtube.com/watch?v=-cdph8hv0O0",
-                "why": "Leg endurance and mental toughness."
-            }
-        ],
-        "burnout": {
-            "name": "Diamond Push-Ups",
-            "reps": "1 Set: To Failure",
-            "video": "https://www.youtube.com/watch?v=J0DnG1_S92I",
-            "why": "Blast the triceps for throwing velocity."
-        }
-    },
-    "Fri": {
-        "focus": "Agility, Lateral Movement & Conditioning",
-        "audio_opening": "friday_opening.mp3",
-        "exercises": [
-            {
-                "name": "Skater Jumps (Lateral)",
-                "sets": "3",
-                "reps": "16 total",
-                "video": "https://www.youtube.com/watch?v=4R2K9o-n1cM",
-                "why": "Lateral power for fielding range and stealing bases."
-            },
-            {
-                "name": "Burpees (No Push-up)",
-                "sets": "3",
-                "reps": "10",
-                "video": "https://www.youtube.com/watch?v=x0e7wP2i71w",
-                "why": "Conditioning and 'get up' speed."
-            },
-            {
-                "name": "Lateral Line Hops",
-                "sets": "3",
-                "reps": "20 sec",
-                "video": "https://www.youtube.com/watch?v=Gk6WdXqYg9c",
-                "why": "Improves foot speed and ankle stiffness."
-            },
-            {
-                "name": "Dead Bugs",
-                "sets": "3",
-                "reps": "12",
-                "video": "https://www.youtube.com/watch?v=g_BYB0R-4vs",
-                "why": "Separates limb movement from core stability."
-            },
-            {
-                "name": "Broad Jumps",
-                "sets": "3",
-                "reps": "6 jumps",
-                "video": "https://www.youtube.com/watch?v=V-XjIAlF1J8",
-                "why": "Full body power. Focus on balance."
-            }
-        ],
-        "burnout": {
-            "name": "Mountain Climbers",
-            "reps": "1 Set: 60 Seconds",
-            "video": "https://www.youtube.com/watch?v=nmwgirgXLIg",
-            "why": "Core stability and cardio burnout."
-        }
-    },
-    "Stretch": {
-        "focus": "Arm Care & Hip Mobility",
-        "audio_opening": "stretching_opening.mp3",
-        "exercises": [
-            {
-                "name": "Cross-Body Shoulder Stretch",
-                "sets": "2",
-                "reps": "30 sec/arm",
-                "video": "https://www.youtube.com/watch?v=PD3gQO5d9h8",
-                "why": "Loosens the posterior shoulder capsule, crucial for throwers."
-            },
-            {
-                "name": "Kneeling Hip Flexor Stretch",
-                "sets": "2",
-                "reps": "45 sec/leg",
-                "video": "https://www.youtube.com/watch?v=YQmpO9VT2X4",
-                "why": "Opens tight hips to allow for better rotation when hitting and throwing."
-            },
-            {
-                "name": "Seated T-Spine Twist",
-                "sets": "2",
-                "reps": "30 sec/side",
-                "video": "https://www.youtube.com/watch?v=1f33p89jX7E",
-                "why": "Improves thoracic mobility, essential for safe rotation."
-            },
-            {
-                "name": "Wrist & Forearm Stretch",
-                "sets": "2",
-                "reps": "30 sec/arm",
-                "video": "https://www.youtube.com/watch?v=0P9X_X0q0Jg",
-                "why": "Prevents elbow strain by keeping the forearm muscles loose."
-            },
-            {
-                "name": "Child's Pose",
-                "sets": "2",
-                "reps": "60 seconds",
-                "video": "https://www.youtube.com/watch?v=2MJGg-dUKh0",
-                "why": "Decompresses the spine and relaxes the lats after a long week."
-            }
-        ]
-    }
-}
+# 5. Load Data (Dynamic or Fallback)
+program = load_program_from_sheets()
 
 # 6. Main App Logic
 if page == "Home":
@@ -727,7 +624,7 @@ else:
             st.divider()
 
     # --- BURNOUT SECTION (Optional) ---
-    if "burnout" in day_data:
+    if "burnout" in day_data and day_data['burnout']:
         # Use an Expander so it's hidden/optional by default
         with st.expander("🔥 OPTIONAL: THE BURNOUT ROUND", expanded=False):
             # Styling container using st.error for red alert look
