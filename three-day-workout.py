@@ -20,122 +20,162 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. Custom CSS for Tabs & UI
+# 2. Custom CSS for Modern UI & Sticky Menu
 st.markdown("""
     <style>
         /* GLOBAL VARIABLES */
         :root {
             --primary-color: #0066cc;
-        }
-
-        /* REDUCE TOP PADDING */
-        .block-container {
-            padding-top: 2rem !important;
-            padding-bottom: 1rem !important;
+            --bg-color-light: #ffffff;
+            --bg-color-dark: #0e1117;
+            --text-color-light: #1E1E1E;
+            --text-color-dark: #FAFAFA;
         }
 
         /* MAIN HEADER STYLING */
         .main-header {
             text-align: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
-            margin-top: 0px; 
-            margin-bottom: 10px;
+            margin-top: 10px; 
+            margin-bottom: 20px;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
 
-        /* --- STICKY TABS NAVIGATION --- */
-        /* Force the tab container to stick to the top */
-        .stTabs {
+        /* --- MODERN STICKY MENU BAR --- */
+        div[data-testid="stRadio"] {
             position: sticky;
-            top: 0;
-            z-index: 999;
-            background-color: white;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        /* Style individual tabs to look like buttons */
-        div[data-baseweb="tab-list"] {
-            gap: 4px;
+            top: 10px; 
+            z-index: 1000;
             background-color: transparent;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
-        div[data-baseweb="tab"] {
-            flex-grow: 1; /* EXPAND TO FILL WIDTH EQUALLY */
+        div[role="radiogroup"] {
+            background-color: rgba(128, 128, 128, 0.1);
+            padding: 5px;
+            border-radius: 15px;
+            display: flex;
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            width: fit-content;
+            max-width: 98%;
+            gap: 5px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        div[role="radiogroup"] label {
+            background-color: transparent;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin: 0;
+            flex-grow: 0;
             text-align: center;
-            padding: 8px 2px;
-            border-radius: 5px;
-            background-color: #f0f2f6;
-            color: #31333F;
-            font-size: 14px;
             font-weight: 600;
-            border: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            min-width: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Active Tab Styling */
-        div[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #0066cc !important;
-            color: white !important;
-            border: 1px solid #0066cc !important;
+        div[role="radiogroup"] label:hover {
+            background-color: rgba(128, 128, 128, 0.2);
         }
-        
-        /* Hide the default highlight bar below tabs */
-        div[data-baseweb="tab-highlight"] {
+
+        div[role="radiogroup"] label > div:first-child {
+            display: none !important;
+        }
+
+        label[data-testid="stWidgetLabel"] {
             display: none;
         }
-
+        
         /* --- BIGGER STATS BOX --- */
         .stats-box {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            background-color: var(--secondary-background-color);
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            border-radius: 12px;
             padding: 15px;
             margin-bottom: 15px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 500;
         }
         
-        /* --- BURNOUT EXPANDER --- */
-        div[data-testid="stExpander"] details summary p {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #d9534f;
+        /* --- AUDIO PLAYER CARD --- */
+        .audio-card {
+            background-color: #e8f4fd;
+            border-left: 5px solid #0066cc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        @media (prefers-color-scheme: dark) {
+            .audio-card { background-color: #1e293b; border-left: 5px solid #4da6ff; }
+        }
+
+        /* --- FOOTER --- */
+        .footer-container {
             text-align: center;
-            width: 100%;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(128, 128, 128, 0.2);
+            opacity: 0.8;
         }
         
-        /* --- CONTACT STYLES --- */
+        /* --- CONTACT PAGE STYLES --- */
         .contact-header {
-            color: #0066cc;
-            font-size: 20px;
+            color: var(--primary-color);
+            font-size: 22px;
             font-weight: bold;
             margin-top: 20px;
             margin-bottom: 10px;
         }
         .contact-info {
-            background-color: #f0f2f6;
-            padding: 15px;
+            background-color: var(--secondary-background-color);
+            padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
-            border-left: 4px solid #0066cc;
+            border-left: 5px solid var(--primary-color);
         }
         
-        /* --- FOOTER --- */
-        .footer-container {
+        /* --- FEEDBACK FORM STYLES --- */
+        .stSelectSlider {
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        /* --- BURNOUT EXPANDER STYLING --- */
+        div[data-testid="stExpander"] details summary p {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #d9534f;
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            opacity: 0.8;
+            width: 100%;
+        }
+        div[data-testid="stExpander"] details summary {
+            justify-content: center;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# Helper Functions
+# Helper function for YouTube
 def get_youtube_embed(video_url):
     if "v=" in video_url:
         video_id = video_url.split("v=")[1].split("&")[0]
@@ -150,18 +190,25 @@ def get_youtube_embed(video_url):
     </div>
     """
 
-# Google Sheets Auth
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+# --- GOOGLE SHEETS SETUP ---
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
+
 def get_gspread_client():
     try:
         if "gcp_service_account" not in st.secrets:
             creds = Credentials.from_service_account_file("service_account.json", scopes=SCOPES)
         else:
             secret_value = st.secrets["gcp_service_account"]
-            creds_dict = json.loads(secret_value) if isinstance(secret_value, str) else secret_value
+            if isinstance(secret_value, str):
+                creds_dict = json.loads(secret_value)
+            else:
+                creds_dict = secret_value
             creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
         return gspread.authorize(creds)
-    except Exception:
+    except Exception as e:
         return None
 
 def submit_feedback(page_name, rating, comment):
@@ -172,21 +219,18 @@ def submit_feedback(page_name, rating, comment):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         sheet.append_row([timestamp, page_name, rating, comment])
         return True
-    except Exception:
+    except Exception as e:
         return False
 
+# --- DYNAMIC CONTENT LOADING ---
 @st.cache_data(ttl=600)
 def load_program_from_sheets():
-    # Skeleton
-    data = {k: {"focus": "", "audio_opening": "", "exercises": [], "burnout": None} 
-            for k in ["Mon", "Wed", "Fri", "Stretch"]}
-            
-    # Add static details
-    data["Mon"].update({"focus": "Leg Power & Linear Speed", "audio_opening": "monday_opening.mp3"})
-    data["Wed"].update({"focus": "Upper Body Strength & Rotation", "audio_opening": "wednesday_opening.mp3"})
-    data["Fri"].update({"focus": "Agility & Conditioning", "audio_opening": "friday_opening.mp3"})
-    data["Stretch"].update({"focus": "Arm Care & Recovery", "audio_opening": "stretching_opening.mp3"})
-
+    data = {
+        "Mon": {"focus": "Leg Power & Linear Speed", "audio_opening": "monday_opening.mp3", "exercises": [], "burnout": None},
+        "Wed": {"focus": "Upper Body Strength & Rotational Control", "audio_opening": "wednesday_opening.mp3", "exercises": [], "burnout": None},
+        "Fri": {"focus": "Agility, Lateral Movement & Conditioning", "audio_opening": "friday_opening.mp3", "exercises": [], "burnout": None},
+        "Stretch": {"focus": "Arm Care & Hip Mobility", "audio_opening": "stretching_opening.mp3", "exercises": [], "burnout": None}
+    }
     try:
         client = get_gspread_client()
         if not client: return data
@@ -195,128 +239,59 @@ def load_program_from_sheets():
         for row in records:
             day_key = row.get("Day")
             if day_key not in data: continue
-            
-            ex_obj = {
+            exercise_obj = {
                 "name": row.get("Exercise"),
                 "sets": str(row.get("Sets")),
                 "reps": str(row.get("Reps")),
                 "video": row.get("Video"),
                 "why": row.get("Note")
             }
-            if str(row.get("Burnout")).upper() == "TRUE":
-                data[day_key]["burnout"] = ex_obj
+            is_burnout = str(row.get("Burnout")).upper() == "TRUE"
+            if is_burnout:
+                data[day_key]["burnout"] = exercise_obj
             else:
-                data[day_key]["exercises"].append(ex_obj)
+                data[day_key]["exercises"].append(exercise_obj)
         return data
-    except Exception:
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
         return data
 
-# --- MAIN APP LAYOUT ---
+# --- AUDIO CONFIGURATION ---
 BASE_AUDIO_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/audio"
-program = load_program_from_sheets()
 
+# 3. Main Header
 st.markdown('<div class="main-header">12-Week Strength & Agility Program</div>', unsafe_allow_html=True)
 
-# TABS NAVIGATION
-tab_home, tab_mon, tab_wed, tab_fri, tab_str, tab_con = st.tabs(["Home", "Mon", "Wed", "Fri", "Stretch", "Contact"])
+# 4. Main Navigation
+page = st.radio(
+    "Navigation", 
+    ["Home", "Mon", "Wed", "Fri", "Stretch", "Contact"], 
+    horizontal=True,
+    label_visibility="collapsed"
+)
 
-# --- HELPER TO RENDER A WORKOUT PAGE ---
-def render_workout_page(day_key, title):
-    day_data = program[day_key]
-    
-    # Header
-    st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{title}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='text-align: center; font-style: italic; color: #555; margin-bottom: 25px;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
+# 5. Load Data
+program = load_program_from_sheets()
 
-    # Audio
-    opening_url = f"{BASE_AUDIO_URL}/{day_data['audio_opening']}"
+# 6. Main App Logic
+if page == "Home":
+    st.image("https://images.unsplash.com/photo-1680120846170-cb4bc948c797?q=80&w=1000&auto=format&fit=crop", caption="Train Hard, Play Hard")
     
-    # Timer HTML
-    timer_html = """
-    <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 10px; text-align: center; font-family: sans-serif;">
-        <h4 style="margin: 0 0 5px 0; color: #333; font-size: 14px;">⏱️ Warm-Up Timer</h4>
-        <div id="timer-display" style="font-size: 22px; font-weight: bold; color: #0066cc; margin-bottom: 5px;">06:00</div>
-        <button onclick="startTimer()" style="background-color: #0066cc; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer;">Start</button>
-        <button onclick="resetTimer()" style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer;">Reset</button>
-        <audio id="timer-beep"><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mp3"></audio>
+    # Audio Intro
+    opening_url = f"{BASE_AUDIO_URL}/home_intro.mp3"
+    html_code = f"""
+    <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
+        <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Listen: Program Intro from Coach D</p>
+        <audio id="player" controls style="width: 100%;">
+            <source src="{opening_url}" type="audio/mp3">
+        </audio>
     </div>
     <script>
-        var timeLeft = 360; var timerId = null; var display = document.getElementById("timer-display"); var beep = document.getElementById("timer-beep");
-        function formatTime(s) { var m = Math.floor(s / 60); var sc = s % 60; return (m < 10 ? "0"+m : m) + ":" + (sc < 10 ? "0"+sc : sc); }
-        function startTimer() { if(timerId) return; timerId = setInterval(function() { timeLeft--; display.innerHTML = formatTime(timeLeft); if(timeLeft > 0 && timeLeft % 30 === 0) { beep.pause(); beep.currentTime = 0; beep.play(); } if(timeLeft <= 0) { clearInterval(timerId); timerId = null; display.innerHTML = "00:00"; display.style.color = "red"; beep.play(); } }, 1000); }
-        function resetTimer() { clearInterval(timerId); timerId = null; timeLeft = 360; display.innerHTML = "06:00"; display.style.color = "#0066cc"; }
+        var player = document.getElementById("player");
+        player.play().catch(error => console.log("Autoplay prevented"));
     </script>
     """
-
-    # Audio HTML
-    audio_html = f"""
-    <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
-        <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Coach D's Audio Corner</p>
-        <audio controls style="width: 100%;"><source src="{opening_url}" type="audio/mp3"></audio>
-    </div>
-    """
-    
-    components.html(audio_html, height=160)
-
-    # Show Warmup if NOT stretch
-    if day_key != "Stretch":
-        c1, c2 = st.columns([1.5, 1])
-        with c1:
-            st.markdown("**🔥 Dynamic Warm-Up (2 Rounds)**\n* Jumping Jacks (30s)\n* Arm Circles (30s)\n* High Knees (30s)\n* Butt Kicks (30s)\n* Torso Twists (30s)\n* Leg Swings (30s)")
-        with c2:
-            components.html(timer_html, height=140)
-
-    # Exercises
-    for i, ex in enumerate(day_data['exercises'], 1):
-        with st.container():
-            st.markdown(f"#### {i}. {ex['name']}")
-            st.markdown(f"""<div class="stats-box"><div><strong>Sets:</strong> {ex['sets']}</div><div><strong>Reps:</strong> {ex['reps']}</div></div>""", unsafe_allow_html=True)
-            vh = get_youtube_embed(ex['video'])
-            if vh: st.markdown(vh, unsafe_allow_html=True)
-            else: st.video(ex['video'])
-            st.info(f"**💡 Coach's Note:** {ex['why']}")
-            st.divider()
-
-    # Burnout
-    if day_data['burnout']:
-        with st.expander("🔥 OPTIONAL: THE BURNOUT ROUND", expanded=False):
-            st.error("⚠️ Warning: This section is for those who want to empty the tank. Proceed with caution!")
-            bo = day_data['burnout']
-            st.markdown(f"<h2 style='text-align: center; font-weight: 900;'>{bo['name']}</h2>", unsafe_allow_html=True)
-            st.markdown(f"**Target:** {bo['reps']}")
-            vh = get_youtube_embed(bo['video'])
-            if vh: st.markdown(vh, unsafe_allow_html=True)
-            else: st.video(bo['video'])
-            st.write(f"**Why:** {bo['why']}")
-            st.markdown("---")
-
-    # Feedback
-    st.subheader("📝 Rate this Session")
-    with st.form(key=f"fb_{day_key}"):
-        st.write("How was the intensity today?")
-        rate = st.select_slider("Difficulty", options=["Too Easy", "Just Right", "Too Hard"], value="Just Right", label_visibility="collapsed")
-        comm = st.text_area("Notes?", placeholder="Shoulder felt good...")
-        if st.form_submit_button("Submit Feedback"):
-            if submit_feedback(day_key, rate, comm): st.success("Feedback sent!")
-            else: st.error("Connection failed.")
-    
-    if st.button(f"Mark {title} Complete ✅"):
-        st.balloons()
-
-# --- TAB CONTENTS ---
-with tab_home:
-    st.image("https://images.unsplash.com/photo-1680120846170-cb4bc948c797?q=80&w=1000&auto=format&fit=crop")
-    
-    # Intro Audio
-    opening_url = f"{BASE_AUDIO_URL}/home_intro.mp3"
-    intro_html = f"""
-    <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
-        <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Listen: Program Intro</p>
-        <audio id="intro_player" controls style="width: 100%;"><source src="{opening_url}" type="audio/mp3"></audio>
-        <script>var p = document.getElementById("intro_player"); p.play().catch(e => console.log("Autoplay blocked"));</script>
-    </div>
-    """
-    components.html(intro_html, height=160)
+    components.html(html_code, height=160)
     
     st.markdown("""
     Welcome to Coach D's 12-week program. This program is designed to build:
@@ -328,39 +303,152 @@ with tab_home:
     1.  Select your workout day from the menu above.
     2.  Watch the videos for proper form.
     3.  Complete every rep.
+    
+    **Coach's Tip:** consistency is key. Don't skip a day, don't cheat yourself!  Results guaranteed after 12 weeks.
     """)
     
-    st.markdown("""<div class="footer-container"><p>Powered by</p><a href="https://revealbetter.com" target="_blank"><img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(6).png" style="width: 150px;"></a></div>""", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="footer-container">
+            <p>Powered by</p>
+            <a href="https://revealbetter.com" target="_blank">
+                <img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(6).png" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
+            </a>
+            <p style="font-size: 14px;">Unlock your athletic potential with personalized coaching and programs.</p>
+            <a class="footer-link" href="https://revealbetter.com" target="_blank">Visit revealbetter.com</a>
+        </div>
+    """, unsafe_allow_html=True)
 
-with tab_mon:
-    render_workout_page("Mon", "Monday Workout")
-
-with tab_wed:
-    render_workout_page("Wed", "Wednesday Workout")
-
-with tab_fri:
-    render_workout_page("Fri", "Friday Workout")
-
-with tab_str:
-    render_workout_page("Stretch", "Post-workout Stretching")
-
-with tab_con:
+elif page == "Contact":
     st.title("Contact Reveal")
     video_url = "https://www.youtube.com/watch?v=KKjuRJh_3LY&list=PLGmxyVGSCDKvmLInHxJ9VdiwEb82Lxd2E&index=20"
-    vh = get_youtube_embed(video_url)
-    if vh: st.markdown(vh, unsafe_allow_html=True)
-    else: st.video(video_url)
+    video_html = get_youtube_embed(video_url)
+    if video_html:
+        st.markdown(video_html, unsafe_allow_html=True)
+    else:
+        st.video(video_url)
     
     st.markdown("""
     <div class="contact-header">About Reveal</div>
-    <p>At Reveal, we believe every athlete has another level they haven't unlocked yet.</p>
+    <p>At Reveal, we believe every athlete has another level they haven't unlocked yet. We combine data-driven training with old-school work ethic to help athletes from 5 to 85 maximize their potential. From youth development and elite performance to entire body wellness, we provide the roadmap; you provide the effort.</p>
+    
     <div class="contact-header">Our Services</div>
-    <ul><li>Personalized Coaching</li><li>Strength & Agility Programs</li><li>Remote Programming</li><li>Team Clinics</li></ul>
+    <ul>
+        <li><strong>Personalized Coaching:</strong> 1-on-1 instruction tailored to your specific mechanical needs and goals.</li>
+        <li><strong>Strength & Agility Programs:</strong> Comprehensive gym and field work designed to translate directly to game performance.</li>
+        <li><strong>Remote Programming:</strong> Get elite coaching anywhere in the world with our app-based training plans.</li>
+        <li><strong>Team Clinics:</strong> Specialized workshops for teams looking to gain a competitive edge.</li>
+    </ul>
+    
     <div class="contact-info">
-        <div style="font-weight: bold; font-size: 18px;">Reveal, LLC</div>
-        <p>📍 6800 Wisconsin Avenue<br>Chevy Chase, Maryland 20815</p>
+        <div style="font-weight: bold; font-size: 18px; margin-bottom: 10px;">Reveal, LLC</div>
+        <p>📍 6800 Wisconsin Avenue<br>Chevy Chase, Maryland 20815<br>United States</p>
         <p>📧 <a href="mailto:info@revealbetter.com">info@revealbetter.com</a></p>
         <p>📞 <a href="tel:2027687648">(202) 768-7648</a></p>
     </div>
     """, unsafe_allow_html=True)
-    st.markdown("""<div class="footer-container"><a href="https://revealbetter.com" target="_blank"><img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(6).png" style="width: 150px;"></a></div>""", unsafe_allow_html=True)
+    
+    st.markdown("""
+        <div class="footer-container">
+            <p>Powered by</p>
+            <a href="https://revealbetter.com" target="_blank">
+                <img src="https://raw.githubusercontent.com/matthewusmith/baseball-workout-app/refs/heads/main/Reveal%20Logo%20(6).png" alt="Reveal Better Logo" style="width: 150px; border-radius: 5px; margin-bottom: 10px;">
+            </a>
+            <p style="font-size: 14px;">Unlock your athletic potential with personalized coaching and programs.</p>
+            <a class="footer-link" href="https://revealbetter.com" target="_blank">Visit revealbetter.com</a>
+        </div>
+    """, unsafe_allow_html=True)
+
+else:
+    # WORKOUT PAGES
+    day_data = program[page]
+    
+    page_titles = {
+        "Mon": "Monday Workout",
+        "Wed": "Wednesday Workout",
+        "Fri": "Friday Workout",
+        "Stretch": "Post-workout Stretching"
+    }
+    title_text = page_titles.get(page, f"{page} Workout")
+    
+    st.markdown(f"<h3 style='text-align: center; margin-bottom: 5px;'>{title_text}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; font-style: italic; color: #555; margin-bottom: 25px;'>Focus: {day_data['focus']}</p>", unsafe_allow_html=True)
+    
+    # Audio Coach
+    opening_url = f"{BASE_AUDIO_URL}/{day_data['audio_opening']}"
+    timer_html = """
+    <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 10px; margin-bottom: 5px; text-align: center; font-family: sans-serif;">
+        <h4 style="margin: 0 0 5px 0; color: #333; font-size: 16px;">⏱️ Warm-Up Timer</h4>
+        <div id="timer-display" style="font-size: 24px; font-weight: bold; color: #0066cc; margin-bottom: 5px;">06:00</div>
+        <button onclick="startTimer()" style="background-color: #0066cc; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-right: 5px;">Start</button>
+        <button onclick="resetTimer()" style="background-color: #f0f0f0; color: #333; border: 1px solid #ccc; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">Reset</button>
+        <audio id="timer-beep"><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mp3"></audio>
+    </div>
+    <script>
+        var timeLeft = 360; var timerId = null; var display = document.getElementById("timer-display"); var beep = document.getElementById("timer-beep");
+        function formatTime(s) { var m = Math.floor(s / 60); var sc = s % 60; return (m < 10 ? "0"+m : m) + ":" + (sc < 10 ? "0"+sc : sc); }
+        function startTimer() { if(timerId) return; timerId = setInterval(function() { timeLeft--; display.innerHTML = formatTime(timeLeft); if(timeLeft > 0 && timeLeft % 30 === 0) { beep.pause(); beep.currentTime = 0; beep.play(); } if(timeLeft <= 0) { clearInterval(timerId); timerId = null; display.innerHTML = "00:00"; display.style.color = "red"; beep.play(); } }, 1000); }
+        function resetTimer() { clearInterval(timerId); timerId = null; timeLeft = 360; display.innerHTML = "06:00"; display.style.color = "#0066cc"; }
+    </script>
+    """
+    audio_player_html = f"""
+    <div style="background-color: #e8f4fd; border-left: 5px solid #0066cc; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-family: sans-serif;">
+        <p style="margin: 0 0 10px 0; font-weight: bold; color: #1E1E1E;">🔊 Coach D's Audio Corner</p>
+        <audio id="player" controls style="width: 100%;">
+            <source src="{opening_url}" type="audio/mp3">
+        </audio>
+        <p id="status" style="font-size: 12px; color: #666; margin-top: 5px; font-style: italic;">Playing Opening...</p>
+    </div>
+    <script>
+        var player = document.getElementById("player");
+        var statusLabel = document.getElementById("status");
+        var promise = player.play();
+        if (promise !== undefined) {{ promise.then(_ => {{ console.log("Autoplay started!"); statusLabel.innerHTML = "Playing Opening..."; }}).catch(error => {{ console.log("Autoplay prevented."); statusLabel.innerHTML = "Autoplay blocked by browser. Please press Play to start."; }}); }}
+        player.onended = function() {{ statusLabel.innerHTML = "Opening finished. Good luck with the workout!"; }};
+    </script>
+    """
+    components.html(audio_player_html, height=160)
+    
+    if page != "Stretch":
+        w_col1, w_col2 = st.columns([1.5, 1])
+        with w_col1:
+            st.markdown("**🔥 Dynamic Warm-Up (6 Min)**\n* Jumping Jacks (30s)\n* Arm Circles (30s)\n* High Knees (30s)\n* Butt Kicks (30s)\n* Torso Twists (30s)\n* Leg Swings (30s)")
+        with w_col2:
+            components.html(timer_html, height=135)
+    
+    for i, ex in enumerate(day_data['exercises'], 1):
+        with st.container():
+            st.markdown(f"#### {i}. {ex['name']}")
+            st.markdown(f"""<div class="stats-box"><div><strong>Sets:</strong> {ex['sets']}</div><div><strong>Reps:</strong> {ex['reps']}</div></div>""", unsafe_allow_html=True)
+            video_html = get_youtube_embed(ex['video'])
+            if video_html: st.markdown(video_html, unsafe_allow_html=True)
+            else: st.video(ex['video'])
+            st.info(f"**💡 Coach's Note:** {ex['why']}")
+            st.divider()
+
+    if "burnout" in day_data and day_data['burnout']:
+        with st.expander("🔥 OPTIONAL: THE BURNOUT ROUND", expanded=False):
+            st.error("⚠️ Warning: This section is for those who want to empty the tank. Proceed with caution!")
+            bo = day_data['burnout']
+            st.markdown(f"<h2 style='text-align: center; font-weight: 900;'>{bo['name']}</h2>", unsafe_allow_html=True)
+            st.markdown(f"**Target:** {bo['reps']}")
+            video_html = get_youtube_embed(bo['video'])
+            if video_html: st.markdown(video_html, unsafe_allow_html=True)
+            else: st.video(bo['video'])
+            st.write(f"**Why:** {bo['why']}")
+            st.markdown("---")
+
+    st.subheader("📝 Rate this Session")
+    with st.form(key=f"feedback_form_{page}"):
+        st.write("How was the intensity today?")
+        rating = st.select_slider("Difficulty Rating", options=["Too Easy", "Just Right", "Too Hard"], value="Just Right", label_visibility="collapsed")
+        comment = st.text_area("Any pain, issues, or notes?", placeholder="Shoulder felt good, burpees were tough...")
+        submit_btn = st.form_submit_button("Submit Feedback")
+        if submit_btn:
+            if submit_feedback(page, rating, comment):
+                st.success("Thanks! Feedback sent to Coach D.")
+            else:
+                st.error("Could not connect to database. Please check your internet connection or API setup.")
+
+    if st.button(f"Mark {page} Complete ✅"):
+        st.balloons()
+        st.success("Workout Recorded! Great job today.")
