@@ -12,23 +12,28 @@ GITHUB_USER = "matthewusmith"
 REPO_NAME = "baseball-workout-app"
 BRANCH = "main"
 
-# Construct the raw URL with a cache-busting parameter (?v=1) to force updates
-APP_ICON_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/{ICON_FILENAME}?v=1"
+# Construct the raw URL with a cache-busting parameter to force updates
+APP_ICON_URL = f"https://raw.githubusercontent.com/{GITHUB_USER}/{REPO_NAME}/{BRANCH}/{ICON_FILENAME}?v=2"
 
 # 1. Page Configuration
 st.set_page_config(
     page_title="12-Week Strength & Agility",
-    page_icon=APP_ICON_URL, # Uses your custom image instead of the baseball emoji
+    page_icon=APP_ICON_URL, # Uses your custom image for browser tabs
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# Inject the Apple Touch Icon tag for iOS
-# Added sizes="180x180" to help iOS identify it correctly
+# --- ADVANCED ICON INJECTION ---
+# This uses JavaScript to force the apple-touch-icon into the <head> of the document
+# where iOS looks for it, rather than the <body> where Streamlit usually puts things.
 st.markdown(
     f"""
-    <link rel="apple-touch-icon" sizes="180x180" href="{APP_ICON_URL}">
-    <link rel="icon" type="image/png" href="{APP_ICON_URL}">
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'apple-touch-icon';
+        link.href = '{APP_ICON_URL}';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
     """,
     unsafe_allow_html=True
 )
